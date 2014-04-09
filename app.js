@@ -33,7 +33,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+app.get('/', routes.index(db));
 app.get('/users', user.list);
 app.get('/userlist', routes.userlist(db));
 app.post('/adduser', routes.adduser(db));
