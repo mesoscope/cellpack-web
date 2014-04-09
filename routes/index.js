@@ -7,10 +7,6 @@ exports.index = function(req, res){
   res.render('index', { title: 'Express' });
 };
 
-exports.autopack = function(req, res) {
-  res.render('autopack', {title: 'The new autopack!'});
-};
-
 exports.userlist = function(db) {
   return function(req, res) {
     var collection = db.get('usercollection');
@@ -18,10 +14,6 @@ exports.userlist = function(db) {
       res.render('userlist', {"userlist": docs});
     });
   };
-};
-
-exports.newuser = function(req, res) {
-  res.render('newuser', {title: 'Add New User'});
 };
 
 exports.adduser = function(db) {
