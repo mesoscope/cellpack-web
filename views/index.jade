@@ -1,9 +1,17 @@
 extends layout
 
 block content
-  h1.
-    User List
-  ul
-    each user, i in userlist
-      li
-        a(href="mailto:#{user.email}")= user.username
+  div(id="container", style="width:726px")
+    div(id="header", style="background-color:#383838", align="middle")
+      img(src="images/autopack.png")
+    div(id="menu", style="background-color:#707070;height:400px;width:363px;float:left;")
+      ul
+        each user, i in userlist
+          li
+            a(href="mailto:#{user.email}")= user.username
+    div(id="content", style="background-color:#A0A0A0;height:400px;width:363px;float:left;")
+      p MORE CONTENT
+
+    div(id="footer", align="middle")
+      p Mesoscope Lab - Graham Johnson
+       
