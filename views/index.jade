@@ -6,9 +6,9 @@ block content
       img(src="images/autopack.png")
     div(id="menu", style="background-color:#707070;height:400px;width:363px;float:left;")
       ul
-        each user, i in userlist
+        each recipe, i in recipes
           li
-            a(href="mailto:#{user.email}")= user.username
+            a(href=recipe.name)= recipe.name
     div(id="content", style="background-color:#A0A0A0;height:400px;width:363px;float:left;")
       p MORE CONTENT
 

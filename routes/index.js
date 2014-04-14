@@ -5,9 +5,9 @@
 
 exports.index = function(db) {
   return function(req, res) {
-    var collection = db.get('usercollection');
+    var collection = db.get('recipes');
     collection.find({}, {}, function(e, docs) {
-      res.render('index', {"userlist": docs});
+      res.render('index', {"recipes": docs});
     });
   };
 };
