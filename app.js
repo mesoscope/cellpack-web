@@ -34,6 +34,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index(db));
+app.get('/:recipename', routes.recipe(db));
 app.get('/users', user.list);
 app.post('/adduser', routes.adduser(db));
 
