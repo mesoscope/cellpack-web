@@ -33,7 +33,7 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index(db));
-app.get('/:recipename', routes.recipe(db));
+app.get('/recipes/:recipename', routes.recipe(db));
 app.post('/adduser', routes.adduser(db));
 
 http.createServer(app).listen(app.get('port'), function(){
