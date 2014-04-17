@@ -34,8 +34,8 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index(db));
 app.get('/recipes/:recipename', routes.recipe(db));
-app.get('/newrecipe', function(req, res) {res.render('newrecipe', {title: "Create New Recipe"})});
-app.post('/newrecipe', routes.newrecipe(db));
+app.get('/newrecipe', routes.newrecipe(db));
+app.post('/newrecipe', routes.createnewrecipe(db));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

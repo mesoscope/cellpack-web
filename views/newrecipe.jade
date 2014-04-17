@@ -3,7 +3,18 @@ extends layout
 block content
   h1= title
   form(action='/newrecipe', method='post')
-      input(type='text', placeholder="Recipe Name", name='recipename')
+    input(type='text', placeholder="Recipe Name", name='recipename')
+    br
+    h2= "Recipe Options"
+    br
+    h2= "Parent Recipe"
+    each recipe, i in recipes
+      input(type='radio', name='parent')
       br
-      button(type="submit") Submit
+    h2= "Children Recipes"
+    each recipe, i in recipes
+      input(type='checkbox', name='children')
+      br
+    br
+    button(type="submit") Submit
         

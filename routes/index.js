@@ -19,6 +19,15 @@ exports.recipe = function(db) {
 
 exports.newrecipe = function(db) {
   return function(req, res) {
+    var collection = db.get('recipes');
+    collection.find({}, function(e, docs) {
+      res.render('newrecipe', {title: "Create New Recipe", "recipes": docs});
+    });
+  };
+};
+
+exports.createnewrecipe = function(db) {
+  return function(req, res) {
     var rn = req.body.recipename;
     var collection = db.get('recipes');
     collection.insert({"name": rn}, function(err, doc) {
