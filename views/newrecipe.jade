@@ -1,5 +1,9 @@
 extends layout
 
 block content
-  form
-    Recipe Name:
+  h1= title
+  form(action='/newrecipe', method='post')
+      input(type='text', placeholder="Recipe Name", name='recipename')
+      br
+      button(type="submit") Submit
+        

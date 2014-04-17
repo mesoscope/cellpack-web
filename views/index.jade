@@ -5,14 +5,20 @@ block content
     div(id="header", style="background-color:#383838", align="middle")
       img(src="images/autopack.png")
     div(id="menu", style="background-color:#707070;height:400px;width:363px;float:left")
+      div(align="middle")
+        h2= "Recipe Catalog"
       ul
         each recipe, i in recipes
           li
             a(href='/recipes/'+recipe.name)= recipe.name
-        li
-          a(href='/newrecipe') New Recipe
+      div(align="middle")
+        form(action='/newrecipe')
+          button(type="submit") Create New Recipe
     div(id="content", style="background-color:#A0A0A0;height:400px;width:363px;float:left;")
-      p MORE CONTENT
+      div(align="middle")
+        img(src="images/hiv.png", width="300px", height="250px")
+      div(align="middle")
+        h3= "Rendered HIV Recipe"
 
     div(id="footer", align="middle")
       p Mesoscope Lab - Graham Johnson

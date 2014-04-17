@@ -1,6 +1,6 @@
 extends layout
 
 block content
-  div
-    each val, index in recipes
-      li= index + ': ' + val
+  h1= 'Recipe Summary'
+  each val, index in recipes
+    li= index + ': ' + val
