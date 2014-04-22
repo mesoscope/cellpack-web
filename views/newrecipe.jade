@@ -16,9 +16,9 @@ block content
     button(type="button") Add More Option Fields
     h2= "Children Recipes"
     each recipe, i in recipes
-      input(type='checkbox', name='children', value='childrennames')
+      input(type='checkbox', name='#{recipe.name}', value='checked')
       | #{recipe.name}
       br
     br
     button(type="submit") Submit
-        
+    button(type="reset") Cancel

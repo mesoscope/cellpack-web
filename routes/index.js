@@ -28,9 +28,23 @@ exports.newrecipe = function(db) {
 
 exports.createnewrecipe = function(db) {
   return function(req, res) {
+    //console.log(req.body)
     var rn = req.body.recipename;
+    var on = req.body.optionname;
+    var ov = req.body.optionvalue;
+    var on2 = req.body.optionname2;
+    var ov2 = req.body.optionvalue2;
+    var kys = Object.keys(req.body);
+    var chld = [];
+    for (var k in kys) {
+      if (kys.hasOwnProperty(k)) {
+        if (k == 'checked') {
+          chld.push(k);
+        }
+      }
+    }
     var collection = db.get('recipes');
-    collection.insert({"name": rn}, function(err, doc) {
+    collection.insert({"name": rn, "options": {on: ov, on2: ov2}, "children": chld}, function(err, doc) {
       if (err) {res.send("There was a problem adding your recipe to the database.");}
       else {res.redirect("/");}
     });
