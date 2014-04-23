@@ -12,7 +12,7 @@ exports.recipe = function(db) {
     var collection = db.get('recipes');
     var rn = req.params.recipename;
     collection.findOne({name: rn}, function(e, docs) {
-      res.render('recipe', {"recipes": docs});
+      res.render('recipe', {"recipe": docs});
     });
   };
 };
