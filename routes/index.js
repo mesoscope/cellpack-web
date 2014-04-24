@@ -11,8 +11,19 @@ exports.recipe = function(db) {
   return function(req, res) {
     var collection = db.get('recipes');
     var rn = req.params.recipename;
-    collection.findOne({name: rn}, function(e, docs) {
-      res.render('recipe', {"recipe": docs});
+    collection.find({name: rn}, function(e, docs) {
+      var ols = [];
+      for (r in docs) {
+        if (docs.hasOwnProperty(r)) {
+          var oks = Object.keys(docs[r]["options"]);
+          for (ol in oks) {
+            if (oks.hasOwnProperty(ol) && !(ols.indexOf(oks[ol]) > -1)) {
+              ols.push(oks[ol]);
+            }
+          }
+        }
+      }
+      res.render('recipe', {"recipes": docs, "name": rn, "optionLabs": ols});
     });
   };
 };

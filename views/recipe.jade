@@ -1,11 +1,23 @@
 extends layout
 
 block content
-  h1= recipe["name"] + ' (Version ' + recipe["version"] + ')'
-  h2= 'Options'
-  each val, index in recipe["options"]
-    li= index + ': ' + val
-  h2= 'Children'
-  each val, index in recipe["children"]
-    li= val
+  h1= name
+  table(border="1", style="width:300px")
+    tr
+      td VERSION
+      td Children
+      each ol in optionLabs
+        td= ol
+    each recipe, index in recipes
+      tr
+        td= recipe["version"]
+        if recipe["children"]
+          td= recipe["children"]
+        else
+          td No Children
+        each lab in optionLabs
+          if String(typeof recipe["options"][lab])
+            td= String(recipe["options"][lab])
+      
+
   
