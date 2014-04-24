@@ -23,6 +23,7 @@ exports.recipe = function(db) {
           }
         }
       }
+      console.log(docs)
       res.render('recipe', {"recipes": docs, "name": rn, "optionLabs": ols});
     });
   };
@@ -39,12 +40,13 @@ exports.newrecipe = function(db) {
 
 exports.createnewrecipe = function(db) {
   return function(req, res) {
-    //console.log(req.body)
+    console.log(req.body)
     var rn = req.body.recipename;
     var on = req.body.optionname;
     var ov = req.body.optionvalue;
     var on2 = req.body.optionname2;
     var ov2 = req.body.optionvalue2;
+    var optDict = {on: ov, on2: ov2}
     var kys = Object.keys(req.body);
     var chld = [];
     for (var k in kys) {
@@ -54,8 +56,10 @@ exports.createnewrecipe = function(db) {
         }
       }
     }
+    console.log(optDict}
+    console.log(chld)
     var collection = db.get('recipes');
-    collection.insert({"name": rn, "options": {on: ov, on2: ov2}, "children": chld}, function(err, doc) {
+    collection.insert({"name": rn, "options": optDict, "children": chld}, function(err, doc) {
       if (err) {res.send("There was a problem adding your recipe to the database.");}
       else {res.redirect("/");}
     });
