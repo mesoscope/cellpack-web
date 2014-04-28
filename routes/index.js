@@ -40,26 +40,42 @@ exports.newrecipe = function(db) {
 
 exports.createnewrecipe = function(db) {
   return function(req, res) {
-    console.log(req.body)
-    var rn = req.body.recipename;
-    var on = req.body.optionname;
-    var ov = req.body.optionvalue;
-    var on2 = req.body.optionname2;
-    var ov2 = req.body.optionvalue2;
-    var optDict = {on: ov, on2: ov2}
+    //console.log(req.body);
+
+    var optDict = {};
+
+    var on = req.body["optionname"];
+    var ov = req.body["optionvalue"];
+    optDict[on] = ov;
+
+    var on2 = req.body["optionname2"];
+    var ov2 = req.body["optionvalue2"];
+    optDict[on2] = ov2;
+
+
     var kys = Object.keys(req.body);
+    var kysLength = kys.length;
     var chld = [];
-    for (var k in kys) {
-      if (kys.hasOwnProperty(k)) {
-        if (k == 'checked') {
-          chld.push(k);
-        }
+
+    //console.log(optDict);
+
+    for (var i = 0; i < kysLength; i++) {
+      if (String(req.body[kys[i]]) == 'checked') {
+        chld.push(kys[i]);
       }
     }
-    console.log(optDict}
-    console.log(chld)
+    console.log(chld);
+
+    var docDict = {};
+    docDict["name"] = req.body.recipename;
+    docDict["options"] = optDict;
+    docDict["children"] = chld;
+
+    //console.log(docDict);
+
     var collection = db.get('recipes');
-    collection.insert({"name": rn, "options": optDict, "children": chld}, function(err, doc) {
+    
+    collection.insert(docDict, function(err, doc) {
       if (err) {res.send("There was a problem adding your recipe to the database.");}
       else {res.redirect("/");}
     });
