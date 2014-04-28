@@ -44,12 +44,12 @@ exports.createnewrecipe = function(db) {
 
     var optDict = {};
 
-    var on = req.body["optionname"];
-    var ov = req.body["optionvalue"];
+    var on = req.body["optionname"].trim();
+    var ov = req.body["optionvalue"].trim();
     optDict[on] = ov;
 
-    var on2 = req.body["optionname2"];
-    var ov2 = req.body["optionvalue2"];
+    var on2 = req.body["optionname2"].trim();
+    var ov2 = req.body["optionvalue2"].trim();
     optDict[on2] = ov2;
 
 
@@ -67,7 +67,7 @@ exports.createnewrecipe = function(db) {
     console.log(chld);
 
     var docDict = {};
-    docDict["name"] = req.body.recipename;
+    docDict["name"] = req.body.recipename.trim();
     docDict["options"] = optDict;
     docDict["children"] = chld;
 
