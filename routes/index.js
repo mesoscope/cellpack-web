@@ -1,8 +1,9 @@
-exports.index = function(db) {
+exports.recipes = function(db) {
   return function(req, res) {
     var collection = db.get('recipes');
-    collection.find({}, function(e, docs) {
-      res.render('index', {"recipes": docs});
+    var rn = req.params.recipename;
+    collection.distinct({}, function(e, docs) {
+      res.render('recipes', {"recipes": docs});
     });
   };
 };
