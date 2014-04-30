@@ -1,25 +1,37 @@
 extends layout
 
 block content
-  div(id="container", style="width:1200px, height:1000px")
+  div(id="container", style="width:900px, height:1000px")
 
-    div(id="banner", style="background-color:#383838;height:150px;width:1200px", align="right")
+    div(id="banner", style="height:150px", align="right")
       img(src="images/autopack.png")
 
-    div(id="menu", style="background-color:#707070;height:400px;width:600px;float:left")
-      div(align="middle")
-        h1 Welcome to AUTOPACK!
-        h2 What would you like to do?
-     
-    div(id="next", style="background-color:#A0A0A0;height:400px;width:600px;float:left;")
-      div(align="middle")
-        h2 REPLACE THESE WITH COOL IMAGES
-        div(style="height:")
-          form(action='/recipes')
-            button(type="submit") View Existing Recipe
-        div
-          form
-            button(type="submit") Modify Existing Recipe
-        div
-          form(action='/newrecipe')
-            button(type="submit") Create New Recipe
+    div(id="menu", style="height:50px", align="middle")
+      h2 Interface &nbsp
+        select
+          option Beginner
+          option Intermediate
+          option Advanced
+          option Debug
+
+    div(id="links", style="height:50px")
+      div(style="float:left", align="center")
+        a(href="/") Cool Image for Recipe View Link
+      div(style="float:right", align="center")
+        a(href="/newrecipe") Cool Image for Recipe Create Link
+      div(style="float:none", align="center")
+        a(href="/recipes") Cool Image for Recipe Modify Link
+
+    div(id="versioncontain", style="height:150px")
+      div(id="content", align="middle")
+        h2 autoPACK Recipe &nbsp 
+          select
+        h2 Version Number &nbsp
+          select
+        h2 Display &nbsp
+          select
+            option JPEG
+            option WebGL
+
+    div(id="images", align="middle")
+      img(src="images/hiv.png", style="width:400px")
