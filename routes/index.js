@@ -1,3 +1,13 @@
+exports.index = function(db) {
+  return function(req, res) {
+    var collection = db.get("recipes");
+    collection.find({}, function(e, docs) {
+      res.render("index", {"recipes": docs});
+    });
+  };
+};
+
+
 exports.recipes = function(db) {
   return function(req, res) {
     var collection = db.get('recipes');

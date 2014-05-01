@@ -4,4 +4,25 @@ html
     title= title
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+    div(id="container", style="width:900px, height:1000px")
+
+      div(id="banner", style="height:125px", align="right")
+        img(src="images/autopack.png")
+
+      div(id="menu", style="height:50px", align="middle")
+        h2 Interface &nbsp
+          select
+            option Beginner
+            option Intermediate
+            option Advanced
+            option Debug
+
+      div(id="links", style="height:50px")
+        div(style="float:left", align="center")
+          a(href="/") Cool Image for Recipe View Link
+        div(style="float:right", align="center")
+          a(href="/newrecipe") Cool Image for Recipe Create Link
+        div(style="float:none", align="center")
+          a(href="/modify") Cool Image for Recipe Modify Link
+      
+      block content

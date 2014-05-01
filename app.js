@@ -32,10 +32,10 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', function(req, res) {res.render('index', {});});
+app.get("/", routes.index(db));
 // unify these two
-app.get('/recipes', routes.recipes(db));
-app.get('/recipes/:recipename', routes.recipe(db));
+app.get("/modify", function(req, res) {res.render("modify", {});});
+app.get('/modify/:recipename', routes.recipe(db));
 // unify these two
 app.get('/newrecipe', routes.newrecipe(db));
 app.post('/newrecipe', routes.createnewrecipe(db));

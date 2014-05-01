@@ -1,37 +1,18 @@
 extends layout
 
 block content
-  div(id="container", style="width:900px, height:1000px")
-
-    div(id="banner", style="height:150px", align="right")
-      img(src="images/autopack.png")
-
-    div(id="menu", style="height:50px", align="middle")
-      h2 Interface &nbsp
+  div(id="versioncontain", style="height:150px")
+    div(id="content", align="middle")
+      h2 autoPACK Recipe &nbsp 
         select
-          option Beginner
-          option Intermediate
-          option Advanced
-          option Debug
+          each recipe, index in recipes
+            option= recipe.name
+      h2 Version Number &nbsp
+        select
+      h2 Display &nbsp
+        select
+          option JPEG
+          option WebGL
 
-    div(id="links", style="height:50px")
-      div(style="float:left", align="center")
-        a(href="/") Cool Image for Recipe View Link
-      div(style="float:right", align="center")
-        a(href="/newrecipe") Cool Image for Recipe Create Link
-      div(style="float:none", align="center")
-        a(href="/recipes") Cool Image for Recipe Modify Link
-
-    div(id="versioncontain", style="height:150px")
-      div(id="content", align="middle")
-        h2 autoPACK Recipe &nbsp 
-          select
-        h2 Version Number &nbsp
-          select
-        h2 Display &nbsp
-          select
-            option JPEG
-            option WebGL
-
-    div(id="images", align="middle")
-      img(src="images/hiv.png", style="width:400px")
+  div(id="images", align="middle")
+    img(src="images/hiv.png", style="width:400px")
