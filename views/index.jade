@@ -3,10 +3,10 @@ extends layout
 block content
   div(id="versioncontain", style="height:150px")
     div(id="content", align="middle")
-      h2 autoPACK Recipe &nbsp 
+      h2 Visualize autoPACK Recipe &nbsp 
         select
-          each recipe, index in recipes
-            option= recipe.name
+          each rn in recipeNames
+            option= rn
       h2 Version Number &nbsp
         select
       h2 Display &nbsp

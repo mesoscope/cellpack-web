@@ -1,44 +1,49 @@
+var helpers = require("utils");
+
 exports.index = function(db) {
   return function(req, res) {
     var collection = db.get("recipes");
     collection.find({}, function(e, docs) {
-      res.render("index", {"recipes": docs});
+      console.log(docs)
+      var recipeNames = helpers.getDocNames(docs);
+      res.render("index", {"recipeNames": recipeNames});
     });
   };
 };
 
-
-exports.recipes = function(db) {
+exports.modify = function(db) {
   return function(req, res) {
-    var collection = db.get('recipes');
-    var rn = req.params.recipename;
-    collection.distinct({}, function(e, docs) {
-      res.render('recipes', {"recipes": docs});
+    var collection = db.get("recipes");
+    collection.find({}, function(e, docs) {
+      res.render("modify", {"recipes": docs});
     });
   };
 };
 
-exports.recipe = function(db) {
+exports.modifyrn = function(db) {
   return function(req, res) {
     var collection = db.get('recipes');
+
     var rn = req.params.recipename;
-    collection.find({name: rn}, function(e, docs) {
-      var ols = [];
-      for (r in docs) {
-        if (docs.hasOwnProperty(r)) {
-          var oks = Object.keys(docs[r]["options"]);
-          for (ol in oks) {
-            if (oks.hasOwnProperty(ol) && !(ols.indexOf(oks[ol]) > -1)) {
-              ols.push(oks[ol]);
-            }
-          }
+    var vers = req.params.version;
+
+    var getNameTree = function(n) {
+    };
+
+    collection.find({}, function(e, docs) {
+      var docsLength = docs.length;
+      for (var i = 0; i < docsLength; i++) {
+        if (docs[i]["name"] == tableNames[0] && docs[i]["version"] == vers) {
+          var tableNames = getNameTree(rn);
         }
       }
-      console.log(docs)
-      res.render('recipe', {"recipes": docs, "name": rn, "optionLabs": ols});
+
+      //console.log(docs)
+      res.render("modifyrn", {"recipes": docs, "tableNames": tableNames});
     });
   };
 };
+
 
 exports.newrecipe = function(db) {
   return function(req, res) {

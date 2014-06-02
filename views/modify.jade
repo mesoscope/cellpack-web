@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  div(id="completepage")
+    div(id="interface", align="middle")
+      h2 Load autoPACK recipe table for: &nbsp
+        select
+          each recipe, index in recipes
+            option= recipe.name
+      h2 Version Number &nbsp
+        select
+      button(type="submit") Load Table
