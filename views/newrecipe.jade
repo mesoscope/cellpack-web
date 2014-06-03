@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  h1= title
+  h1 Create New Recipe
   form(action='/newrecipe', method='post')
     input(type='text', placeholder="Recipe Name", name='recipename')
     br
@@ -15,9 +15,9 @@ block content
     br
     button(type="button") Add More Option Fields
     h2= "Children Recipes"
-    each recipe, i in recipes
-      input(type='checkbox', name='#{recipe.name}', value='checked')
-      | #{recipe.name}
+    each rn in recipeNames
+      input(type='checkbox', name='#{rn}', value='checked')
+      | #{rn}
       br
     br
     button(type="submit") Submit

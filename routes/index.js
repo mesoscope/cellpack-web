@@ -12,25 +12,40 @@ exports.index = function(db) {
 
 exports.modify = function(db) {
   return function(req, res) {
-    var collection = db.get("recipes");
+    var collection = db.get('recipes');
     collection.find({}, function(e, docs) {
       var recipeNames = helpers.getDocNames(docs);
-      res.render("modify", {"recipeNames": recipeNames});
+      res.render('modify', {'recipeNames': recipeNames});
     });
+  };
+};
+
+exports.modifyrouter = function(db) {
+  return function(req, res) {
+    console.log(req.body);
+    var newurl = '/modify/'.concat(req.body["recname"]);
+    console.log(newurl);
+    res.redirect(newurl);
   };
 };
 
 exports.modifyrn = function(db) {
   return function(req, res) {
+
+    var rn = req.params.recname;
+
     var collection = db.get('recipes');
 
-    var rn = helpers.getIdentifierName(req.params.recipeidentifier);
-    var vers = helpers.getIdentifierVersion(req.params.recipeidentifier);
-
-    var getNameTree = function(n) {
-    };
-
+    // don't need to query entire database to find the correct recipes
+    // fix this in the long term
     collection.find({}, function(e, docs) {
+      // this is an array e.g. [1, 15, 10]
+      var identif = rn.concat(helpers.getCurrentVersion(docs, rn));
+
+      var getIdentifierTree = function(rn, c) {
+        c.find({"identifier": rn})
+      };
+
       var docsLength = docs.length;
       for (var i = 0; i < docsLength; i++) {
         if (docs[i]["name"] == tableNames[0] && docs[i]["version"] == vers) {
@@ -39,7 +54,7 @@ exports.modifyrn = function(db) {
       }
 
       //console.log(docs)
-      res.render("modifyrn", {"recipes": docs, "tableNames": tableNames});
+      res.render("modifyrn", {"recipeTree": recipeTree});
     });
   };
 };
@@ -49,7 +64,8 @@ exports.newrecipe = function(db) {
   return function(req, res) {
     var collection = db.get('recipes');
     collection.find({}, function(e, docs) {
-      res.render('newrecipe', {title: "Create New Recipe", "recipes": docs});
+      var recipeNames = helpers.getDocNames(docs);
+      res.render('newrecipe', {"recipeNames": recipeNames});
     });
   };
 };
