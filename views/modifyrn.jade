@@ -1,6 +1,12 @@
-extends layout
+extends modify
 
-block content
-  div(id="completepage")
-    div(id="interface", align="middle")
-      h2 Load autoPACK recipe table for: &nbsp
+block table
+  div(id="table", align="middle")
+    div(id="versioner", align="middle")
+      h2 Select Version: &nbsp
+        form(action='/modify', method='post')
+          select(name='vers')
+            each pv in possibleVersions
+              option= pv
+          button(type="submit") Reload Table
+    div(id="data", align="middle")

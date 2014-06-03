@@ -22,39 +22,38 @@ exports.modify = function(db) {
 
 exports.modifyrouter = function(db) {
   return function(req, res) {
-    console.log(req.body);
-    var newurl = '/modify/'.concat(req.body["recname"]);
-    console.log(newurl);
-    res.redirect(newurl);
+    var collection = db.get('recipes');
+    collection.find({}, function(e, docs) {
+      var cv = helpers.getCurrentArrayVersion(docs, req.body['recname']);
+      var newurl = '/modify/'.concat(req.body['recname'], '/', cv[0], '/', cv[1], '/', cv[2]);
+      res.redirect(newurl);
+    });
   };
 };
 
 exports.modifyrn = function(db) {
   return function(req, res) {
 
-    var rn = req.params.recname;
+    var rn = req.params.recipename;
+    var maj = req.params.major;
+    var mino = req.params.minor;
+    var bug = req.params.bug;
 
     var collection = db.get('recipes');
 
     // don't need to query entire database to find the correct recipes
     // fix this in the long term
     collection.find({}, function(e, docs) {
-      // this is an array e.g. [1, 15, 10]
-      var identif = rn.concat(helpers.getCurrentVersion(docs, rn));
+      var recipeNames = helpers.getDocNames(docs);
+      
+      // array of strings maybe?
+      var possibleVersions = helpers.getStringVersions(docs, rn);
+      
+      // work forward from here
 
-      var getIdentifierTree = function(rn, c) {
-        c.find({"identifier": rn})
-      };
+      var identifierTree = helpers.getIdentifierTree(docs, helpers.constructIdentifier(rn, maj, mino, bug));
 
-      var docsLength = docs.length;
-      for (var i = 0; i < docsLength; i++) {
-        if (docs[i]["name"] == tableNames[0] && docs[i]["version"] == vers) {
-          var tableNames = getNameTree(rn);
-        }
-      }
-
-      //console.log(docs)
-      res.render("modifyrn", {"recipeTree": recipeTree});
+      res.render('modifyrn', {'recipeNames': recipeNames, 'possibleVersions': possibleVersions}, 'identifierTree': identifierTree);
     });
   };
 };

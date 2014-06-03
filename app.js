@@ -34,12 +34,9 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index(db));
 
-
 app.get('/modify', routes.modify(db));
 app.post('/modify', routes.modifyrouter(db));
-// fix this now - no version should default to most recent version
-app.get('/modify/:recipename', routes.modifyrn(db));
-//app.get('/modify/:recipename/:version', routes.modifyrnv(db));
+app.get('/modify/:recipename/:major/:minor/:bug', routes.modifyrn(db));
 
 app.get('/newrecipe', routes.newrecipe(db));
 app.post('/newrecipe', routes.createnewrecipe(db));
