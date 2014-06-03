@@ -35,7 +35,7 @@ if ('development' == app.get('env')) {
 app.get("/", routes.index(db));
 app.get("/modify", routes.modify(db));
 // fix this now
-app.get('/modify/:recipename/:version', routes.modifyrn(db));
+app.get('/modify/:recipeidentifier', routes.modifyrn(db));
 // fix this now
 app.get('/newrecipe', routes.newrecipe(db));
 app.post('/newrecipe', routes.createnewrecipe(db));

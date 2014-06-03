@@ -4,7 +4,6 @@ exports.index = function(db) {
   return function(req, res) {
     var collection = db.get("recipes");
     collection.find({}, function(e, docs) {
-      console.log(docs)
       var recipeNames = helpers.getDocNames(docs);
       res.render("index", {"recipeNames": recipeNames});
     });
@@ -15,7 +14,8 @@ exports.modify = function(db) {
   return function(req, res) {
     var collection = db.get("recipes");
     collection.find({}, function(e, docs) {
-      res.render("modify", {"recipes": docs});
+      var recipeNames = helpers.getDocNames(docs);
+      res.render("modify", {"recipeNames": recipeNames});
     });
   };
 };
@@ -24,8 +24,8 @@ exports.modifyrn = function(db) {
   return function(req, res) {
     var collection = db.get('recipes');
 
-    var rn = req.params.recipename;
-    var vers = req.params.version;
+    var rn = helpers.getIdentifierName(req.params.recipeidentifier);
+    var vers = helpers.getIdentifierVersion(req.params.recipeidentifier);
 
     var getNameTree = function(n) {
     };
