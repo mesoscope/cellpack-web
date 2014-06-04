@@ -3,10 +3,22 @@ extends modify
 block table
   div(id="table", align="middle")
     div(id="versioner", align="middle")
-      h2 Select Version: &nbsp
+      h2 Select Top Recipe Version: &nbsp
         form(action='/modify', method='post')
           select(name='vers')
             each pv in possibleVersions
               option= pv
           button(type="submit") Reload Table
     div(id="data", align="middle")
+      each tableBundle, arrIndex in identifierTree
+        h2= tableBundle.tablename
+        table(border="1")
+          tr
+            td Version
+            each optionValue, optionLabel in tableBundle.tableoptions
+              td= optionLabel
+          tr
+            td= tableBundle.tableversion
+            each optionValue, optionLabel in tableBundle.tableoptions
+              td= optionValue
+        br

@@ -47,13 +47,14 @@ exports.modifyrn = function(db) {
       var recipeNames = helpers.getDocNames(docs);
       
       // array of strings maybe?
+      // eventually need to convert this to raw (between the 2)
       var possibleVersions = helpers.getStringVersions(docs, rn);
-      
-      // work forward from here
 
       var identifierTree = helpers.getIdentifierTree(docs, helpers.constructIdentifier(rn, maj, mino, bug));
 
-      res.render('modifyrn', {'recipeNames': recipeNames, 'possibleVersions': possibleVersions}, 'identifierTree': identifierTree);
+      console.log(identifierTree);
+
+      res.render('modifyrn', {'recipeNames': recipeNames, 'possibleVersions': possibleVersions, 'identifierTree': identifierTree});
     });
   };
 };
