@@ -38,7 +38,7 @@ app.get('/modify', routes.modify(db));
 app.post('/modify', routes.modifyrouter(db));
 
 app.get('/modify/:recipename/:major/:minor/:bug', routes.modifyrn(db));
-app.post('/modify/:recipename/:major/:minor/:bug', routes.modifyrnrouter(db));
+//app.post('/modify/:recipename/:major/:minor/:bug', routes.modifyrnrouter(db));
 
 app.get('/newrecipe', routes.newrecipe(db));
 app.post('/newrecipe', routes.createnewrecipe(db));
