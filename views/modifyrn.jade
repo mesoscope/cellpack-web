@@ -4,7 +4,7 @@ block table
   div(id="table", align="middle")
     div(id="versioner", align="middle")
       h2 Select Top Recipe Version: &nbsp
-        form(action='/modify', method='post')
+        form(method='post')
           select(name='vers')
             each pv in possibleVersions
               option= pv

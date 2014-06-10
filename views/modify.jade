@@ -4,7 +4,7 @@ block content
   div(id="completepage")
     div(id="interface", align="middle")
       h2 Load autoPACK recipe table for: &nbsp
-        form(action='/modify', method='post')
+        form(method='post')
           select(name='recname')
             each rn in recipeNames
               option= rn

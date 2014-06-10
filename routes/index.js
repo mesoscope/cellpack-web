@@ -52,10 +52,20 @@ exports.modifyrn = function(db) {
 
       var identifierTree = helpers.getIdentifierTree(docs, helpers.constructIdentifier(rn, maj, mino, bug));
 
-      console.log(identifierTree);
+      //console.log(identifierTree);
 
       res.render('modifyrn', {'recipeNames': recipeNames, 'possibleVersions': possibleVersions, 'identifierTree': identifierTree});
     });
+  };
+};
+
+exports.modifyrnrouter = function(db) {
+  return function(req, res) {
+    var suppVersion = req.body.vers.split(".");
+    console.log(suppVersion);
+    var newurl = '/modify/'.concat(req.params['recipename'], '/', suppVersion[0], '/', suppVersion[1], '/', suppVersion[2]);
+    console.log(newurl);
+    res.redirect(newurl);
   };
 };
 
