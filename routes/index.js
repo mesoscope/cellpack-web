@@ -61,6 +61,7 @@ exports.modifyrn = function(db) {
 
 exports.modifyrnrouter = function(db) {
   return function(req, res) {
+    console.log(req.body.vers)
     var suppVersion = req.body.vers.split(".");
     console.log(suppVersion);
     var newurl = '/modify/'.concat(req.params['recipename'], '/', suppVersion[0], '/', suppVersion[1], '/', suppVersion[2]);
