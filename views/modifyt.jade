@@ -1,0 +1,11 @@
+extends modify
+
+block table
+  each recDict in individualIDTree
+    table(style="width:300px", border="1")
+      tr
+        th Name
+        th Version
+        each val, key in #{recDict['tableoptions']
+          th key
+      

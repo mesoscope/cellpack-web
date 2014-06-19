@@ -5,7 +5,7 @@ exports.index = function(db) {
     var collection = db.get("recipes");
     collection.find({}, function(e, docs) {
       var recipeNames = helpers.getDocNames(docs);
-      res.render("index", {"recipeNames": recipeNames});
+      res.render('index', {'title': 'cellPACK', 'recipeNames': recipeNames});
     });
   };
 };
@@ -15,58 +15,21 @@ exports.modify = function(db) {
     var collection = db.get('recipes');
     collection.find({}, function(e, docs) {
       var recipeNames = helpers.getDocNames(docs);
-      res.render('modify', {'recipeNames': recipeNames});
+      var recipeData = {};
+      var rnLength = recipeNames.length;
+      for (var i = 0; i < rnLength; i++) {
+        var individualVers = helpers.getStringVersions(docs, recipeNames[i]);
+        recipeData[recipeNames[i]] = individualVers;
+      }
+      if (typeof req.body['recname'] != 'undefined') {
+        var versArray = req.body['recversion'].split('.');
+        var individualIDTree = helpers.getIdentifierTree(docs, helpers.constructIdentifier(req.body['recname'], versArray[0], versArray[1], versArray[2]));
+        //console.log(individualIDTree);
+        res.render('modifyt', {'title': 'Modify Recipe', 'recipeData': recipeData, 'tableTree': individualIDTree});
+      } else {
+        res.render('modify', {'title': 'Modify Recipe', 'recipeData': recipeData});
+      }
     });
-  };
-};
-
-exports.modifyrouter = function(db) {
-  return function(req, res) {
-    var collection = db.get('recipes');
-    collection.find({}, function(e, docs) {
-      var cv = helpers.getCurrentArrayVersion(docs, req.body['recname']);
-      var newurl = '/modify/'.concat(req.body['recname'], '/', cv[0], '/', cv[1], '/', cv[2]);
-      res.redirect(newurl);
-    });
-  };
-};
-
-exports.modifyrn = function(db) {
-  return function(req, res) {
-
-    var rn = req.params.recipename;
-    var maj = req.params.major;
-    var mino = req.params.minor;
-    var bug = req.params.bug;
-
-    var collection = db.get('recipes');
-
-    // don't need to query entire database to find the correct recipes
-    // fix this in the long term
-    collection.find({}, function(e, docs) {
-      var recipeNames = helpers.getDocNames(docs);
-      
-      // array of strings maybe?
-      // eventually need to convert this to raw (between the 2)
-      var possibleVersions = helpers.getStringVersions(docs, rn);
-
-      var identifierTree = helpers.getIdentifierTree(docs, helpers.constructIdentifier(rn, maj, mino, bug));
-
-      //console.log(identifierTree);
-
-      res.render('modifyrn', {'recipeNames': recipeNames, 'possibleVersions': possibleVersions, 'identifierTree': identifierTree});
-    });
-  };
-};
-
-exports.modifyrnrouter = function(db) {
-  return function(req, res) {
-    console.log(req.body.vers)
-    var suppVersion = req.body.vers.split(".");
-    console.log(suppVersion);
-    var newurl = '/modify/'.concat(req.params['recipename'], '/', suppVersion[0], '/', suppVersion[1], '/', suppVersion[2]);
-    console.log(newurl);
-    res.redirect(newurl);
   };
 };
 

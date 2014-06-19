@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(__dirname + '/public'));
 
 // development only
 if ('development' == app.get('env')) {
@@ -35,10 +35,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index(db));
 
 app.get('/modify', routes.modify(db));
-app.post('/modify', routes.modifyrouter(db));
-
-app.get('/modify/:recipename/:major/:minor/:bug', routes.modifyrn(db));
-app.post('/modify/:recipename/:major/:minor/:bug', routes.modifyrnrouter(db));
+app.post('/modify', routes.modify(db));
 
 app.get('/newrecipe', routes.newrecipe(db));
 app.post('/newrecipe', routes.createnewrecipe(db));
