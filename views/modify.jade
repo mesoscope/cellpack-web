@@ -9,11 +9,12 @@ block subhead
 block content
   div(id="completepage")
     div(id="interface", align="middle")
-      h2 Load autoPACK recipe table for: &nbsp
+      h2 Load autoPACK Table &nbsp
         form(method='post')
           select(name='recname', class='recn')
             each rva, rn in recipeData
               option(value=rn)= rn
           select(name='recversion', class='recv')
           button(type="submit") Load Table
+        block submitter
     block table

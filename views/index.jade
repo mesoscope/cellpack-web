@@ -1,20 +1,23 @@
 extends layout
 
-block content
-  div(id="versioncontain", style="height:150px")
-    div(id="content", align="middle")
-      h2 Visualize autoPACK Recipe &nbsp 
-        select
-          each rn in recipeNames
-            option= rn
+block subhead
+  script(src="javascripts/jquery-2.1.1.js")
+  script(type='text/javascript').
+    var local_data = !{JSON.stringify(recipeData)};
+  script(src="javascripts/modify.js")
 
-      h2 Version Number &nbsp
-        select
-      h2 Medium &nbsp
+block content
+  div(id="versioncontain", style="height:75px", align="middle")
+    h2 Visualize autoPACK Recipe &nbsp
+      form(method='post')
+        select(name='recname', class='recn')
+          each rva, rn in recipeData
+            option(value=rn)= rn
+        select(name='recversion', class='recv')
         select
           option JPEG
           option WebGL
-      button(type="submit") Display
+        button(type="submit") Display
 
   div(id="images", align="middle")
     img(src="images/hiv.png", style="width:400px")
