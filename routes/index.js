@@ -18,7 +18,7 @@ exports.modify = function(db) {
       if (typeof req.body['recname'] != 'undefined') {
         var versArray = req.body['recversion'].split('.');
         var individualIDTree = helpers.getIdentifierTree(docs, helpers.constructIdentifier(req.body['recname'], versArray[0], versArray[1], versArray[2]));
-        //console.log(individualIDTree);
+        console.log(individualIDTree);
         res.render('modifyt', {'title': 'Modify Recipe', 'recipeData': recipeData, 'tableTree': individualIDTree});
       } else {
         res.render('modify', {'title': 'Modify Recipe', 'recipeData': recipeData});
