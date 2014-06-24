@@ -2,7 +2,7 @@ extends modify
 
 block submitter
   form
-    button Submit Changes
+    button Save All Changes
 
 block table
   each recDict, arrIndex in tableTree
@@ -16,8 +16,8 @@ block table
         td= recDict.tableversion
         each val, key in recDict.tableoptions
           td= val
-    br
-    button Add New Row
+        td
+          button Save Changes
     br
     br
       
