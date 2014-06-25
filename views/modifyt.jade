@@ -2,22 +2,23 @@ extends modify
 
 block submitter
   form
+    button Revert All Changes
     button Save All Changes
 
+
 block table
-  each recDict, arrIndex in tableTree
-    h2= recDict.tablename
+  each val, arrIndex in tableTree
+    h2= val.tablename
     table(border="1")
       tr
         th Version
-        each val, key in recDict.tableoptions
-          th= key
+        each optionval, optionlabel in val.tableoptions
+          th= optionlabel
       tr
-        td= recDict.tableversion
-        each val, key in recDict.tableoptions
-          td= val
+        td= val.tableversion
+        each optionval, optionlabel in val.tableoptions
+          td= optionval
         td
           button Save Changes
     br
     br
-      
