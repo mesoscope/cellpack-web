@@ -9,16 +9,18 @@ block submitter
 block table
   each val, arrIndex in tableTree
     h2= val.tablename
-    table(border="1")
-      tr
-        th Version
-        each optionval, optionlabel in val.tableoptions
-          th= optionlabel
-      tr
-        td= val.tableversion
-        each optionval, optionlabel in val.tableoptions
-          td= optionval
-        td
-          button Save Changes
-    br
-    br
+    form
+      table(border="1")
+        tr
+          th Version
+          each optionval, optionlabel in val.tableoptions
+            th= optionlabel
+        tr
+          td= val.tableversion
+          each optionval, optionlabel in val.tableoptions
+            td
+              input(type='text', placeholder='#{optionval}')
+          td
+            button Save Changes
+      br
+      br
