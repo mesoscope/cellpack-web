@@ -27,32 +27,40 @@ exports.modify = function(db) {
 };
 
 // make this function way more efficient
+// START WITH THIS FUNCTION
 exports.modified = function(db) {
   return function(req, res) {
-    //console.log(req.body);
-    var collection = db.get('recipes');
-    var submittedKeys = Object.keys(req.body);
-    var docDict = {};
-    for (var i = 0; i < submittedKeys.length; i++) {
-      var splitted = submittedKeys[i].split('-');
-      if (i == 0) {
-        var splitVers = splitted[1].split('.');
-        splitVers[2] = parseInt(splitVers[2]) + 1;
-        docDict['identifier'] = splitted[0]+'-'+splitVers.join('_');
-      }
-      if (req.body[submittedKeys[i]] == '') {
-        collection.find({'identifier': splitted[0]+'-'+splitted[1].split('.').join('_')}, function(e, docs) {
-          console.log(splitted[2]);
-          docDict[splitted[2]] = docs[0][splitted[2]];
-        });
-      } else {
-        docDict[splitted[2]] = req.body[submittedKeys[i]];
-      }
-    }
 
-    console.log(docDict);
-    collection.insert(docDict, function(e, docs) {
-      res.redirect('/modify');
+    var docDict = {};
+    var submittedKeys = Object.keys(req.body);
+
+    var initialSplitID = submittedKeys[0].split('-');
+    var initialSplitVers = initialSplitID[1].split('.');
+    initialSplitVers[2] = parseInt(initialSplitVers[2]) + 1;
+    docDict['identifier'] = initialSplitID[0]+'-'+initialSplitVers.join('_');
+
+    var collection = db.get('recipes');
+    collection.find({'identifier': initialSplitID[0]+'-'+initialSplitID[1].split('.').join('_')}, function(e, docs) {
+      console.log(docs);
+      var innerOptions = {};
+      for (var i = 0; i < submittedKeys.length; i++) {
+        var innerKey = submittedKeys[i].split('-')[2];
+        if (req.body[submittedKeys[i]] == '') {
+          innerOptions[innerKey] = docs[0]['options'][innerKey];
+        } else {
+          innerOptions[innerKey] = req.body[submittedKeys[i]];
+        }
+      }
+
+      console.log(innerOptions);
+
+      docDict['options'] = innerOptions;
+      docDict['children'] = docs[0]['children'];
+      console.log(docDict);
+
+      collection.insert(docDict, function(e, docs) {
+        res.redirect('/modify');
+      });
     });
   };
 };
