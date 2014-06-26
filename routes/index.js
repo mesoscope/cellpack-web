@@ -18,12 +18,49 @@ exports.modify = function(db) {
       if (typeof req.body['recname'] != 'undefined') {
         var versArray = req.body['recversion'].split('.');
         var individualIDTree = helpers.getIdentifierTree(docs, helpers.constructIdentifier(req.body['recname'], versArray[0], versArray[1], versArray[2]));
-        //console.log(individualIDTree);
         res.render('modifyt', {'title': 'Modify Recipe', 'recipeData': recipeData, 'tableTree': individualIDTree});
       } else {
         res.render('modify', {'title': 'Modify Recipe', 'recipeData': recipeData});
       }
     });
+  };
+};
+
+// make this function way more efficient
+exports.modified = function(db) {
+  return function(req, res) {
+    //console.log(req.body);
+    var collection = db.get('recipes');
+    var submittedKeys = Object.keys(req.body);
+    var docDict = {};
+    for (var i = 0; i < submittedKeys.length; i++) {
+      var splitted = submittedKeys[i].split('-');
+      if (i == 0) {
+        var splitVers = splitted[1].split('.');
+        splitVers[2] = parseInt(splitVers[2]) + 1;
+        docDict['identifier'] = splitted[0]+'-'+splitVers.join('_');
+      }
+      if (req.body[submittedKeys[i]] == '') {
+        collection.find({'identifier': splitted[0]+'-'+splitted[1].split('.').join('_')}, function(e, docs) {
+          console.log(splitted[2]);
+          docDict[splitted[2]] = docs[0][splitted[2]];
+        });
+      } else {
+        docDict[splitted[2]] = req.body[submittedKeys[i]];
+      }
+    }
+
+    console.log(docDict);
+    collection.insert(docDict, function(e, docs) {
+      res.redirect('/modify');
+    });
+  };
+};
+
+
+exports.committed = function(db) {
+  return function(req, res) {
+
   };
 };
 

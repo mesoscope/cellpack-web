@@ -1,15 +1,9 @@
 extends modify
 
-block submitter
-  form
-    button Revert All Changes
-    button Save All Changes
-
-
 block table
   each val, arrIndex in tableTree
     h2= val.tablename
-    form
+    form(action='/modified', method='post')
       table(border="1")
         tr
           th Version
@@ -19,8 +13,8 @@ block table
           td= val.tableversion
           each optionval, optionlabel in val.tableoptions
             td
-              input(type='text', placeholder='#{optionval}')
+              input(type='text', placeholder='#{optionval}', name=val.tablename+'-'+val.tableversion+'-'+'#{optionlabel}')
           td
-            button Save Changes
+            button(type="submit") Save Changes
       br
       br
