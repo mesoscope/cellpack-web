@@ -1,20 +1,27 @@
 extends modify
 
 block table
-  each val, arrIndex in tableTree
-    h2= val.tablename
-    form(action='/modified', method='post')
-      table(border="1")
-        tr
-          th Version
-          each optionval, optionlabel in val.tableoptions
-            th= optionlabel
-        tr
-          td= val.tableversion
-          each optionval, optionlabel in val.tableoptions
-            td
-              input(type='text', placeholder='#{optionval}', name=val.tablename+'-'+val.tableversion+'-'+'#{optionlabel}')
-          td
-            button(type="submit") Save Changes
+  form(action='/modified', method='post')
+    div(align="middle")
+      button(type="submit") Commit Changes
+    br
+    br
+    each val, arrIndex in tableTree
+      div(id="tableContainer")
+        div(id="tableLabel", style="float:left", align="center")
+          h2= val.tablename
+        div(id="tableButtons", style="float:right", align="center")
+          button(type="button") Save as New Version
+        div(id="tableContents", style="float:none", align="center")
+          table(border="1")
+            tr
+              th Version
+              each optionval, optionlabel in val.tableoptions
+                th= optionlabel
+            tr
+              td= val.tableversion
+              each optionval, optionlabel in val.tableoptions
+                td
+                  input(type='text', placeholder='#{optionval}', name=val.tablename+'-'+val.tableversion+'-'+'#{optionlabel}')
       br
       br

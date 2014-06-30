@@ -1,8 +1,8 @@
-var helpers = require("utils");
+var helpers = require('utils');
 
 exports.index = function(db) {
   return function(req, res) {
-    var collection = db.get("recipes");
+    var collection = db.get('recipes');
     collection.find({}, function(e, docs) {
       var recipeData = helpers.getRecData(docs);
       res.render('index', {'title': 'cellPACK', 'recipeData': recipeData});
@@ -18,7 +18,7 @@ exports.modify = function(db) {
       if (typeof req.body['recname'] != 'undefined') {
         var versArray = req.body['recversion'].split('.');
         var individualIDTree = helpers.getIdentifierTree(docs, helpers.constructIdentifier(req.body['recname'], versArray[0], versArray[1], versArray[2]));
-        res.render('modifyt', {'title': 'Modify Recipe', 'recipeData': recipeData, 'tableTree': individualIDTree});
+        res.render('modifyt', {'title': 'Modify Recipe', 'topLevel': req.body['recname'], 'recipeData': recipeData, 'tableTree': individualIDTree});
       } else {
         res.render('modify', {'title': 'Modify Recipe', 'recipeData': recipeData});
       }
@@ -26,49 +26,49 @@ exports.modify = function(db) {
   };
 };
 
-// make this function way more efficient
-// START WITH THIS FUNCTION
 exports.modified = function(db) {
   return function(req, res) {
-
+    console.log(req.body);
     var docDict = {};
+    // first key is topLevel
     var submittedKeys = Object.keys(req.body);
 
-    var initialSplitID = submittedKeys[0].split('-');
+    var initialSplitID = submittedKeys[1].split('-');
     var initialSplitVers = initialSplitID[1].split('.');
     initialSplitVers[2] = parseInt(initialSplitVers[2]) + 1;
     docDict['identifier'] = initialSplitID[0]+'-'+initialSplitVers.join('_');
 
     var collection = db.get('recipes');
-    collection.find({'identifier': initialSplitID[0]+'-'+initialSplitID[1].split('.').join('_')}, function(e, docs) {
-      console.log(docs);
+    // rewrite this find to grab everything
+    // then recursively walk the tree until top level recipe
+    collection.find({}, function(e, docs) {
+      var dbIdentifier = initialSplitID[0]+'-'+initialSplitID[1].split('.').join('_');
+      var dbOptions = helpers.getOptionsDict(docs, dbIdentifier);
       var innerOptions = {};
       for (var i = 0; i < submittedKeys.length; i++) {
         var innerKey = submittedKeys[i].split('-')[2];
         if (req.body[submittedKeys[i]] == '') {
-          innerOptions[innerKey] = docs[0]['options'][innerKey];
+          innerOptions[innerKey] = dbOptions[innerKey];
         } else {
           innerOptions[innerKey] = req.body[submittedKeys[i]];
         }
       }
 
-      console.log(innerOptions);
-
       docDict['options'] = innerOptions;
       docDict['children'] = docs[0]['children'];
       console.log(docDict);
+      /*
+      // only update direct ancestry
+      var dbParents = helpers.getAllParents(docs, dbIdentifier);
 
+      if (dbParents) {
+      }
+      // insert entire array at once?
       collection.insert(docDict, function(e, docs) {
         res.redirect('/modify');
       });
+      */
     });
-  };
-};
-
-
-exports.committed = function(db) {
-  return function(req, res) {
-
   };
 };
 

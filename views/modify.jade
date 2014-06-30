@@ -7,14 +7,12 @@ block subhead
   script(src="javascripts/modify.js")
 
 block content
-  div(id="completepage")
-    div(id="interface", align="middle")
-      h2 Load autoPACK Table &nbsp
-        form(method='post')
-          select(name='recname', class='recn')
-            each rva, rn in recipeData
-              option(value=rn)= rn
-          select(name='recversion', class='recv')
-          button(type="submit") Load Table
-        block submitter
+  div(id="interface", align="middle")
+    h2 Load autoPACK Table &nbsp
+      form(method='post')
+        select(name='recname', class='recn')
+          each rva, rn in recipeData
+            option(value=rn)= rn
+        select(name='recversion', class='recv')
+        button(type="submit") Load Table
     block table
