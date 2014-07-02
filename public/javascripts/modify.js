@@ -1,4 +1,4 @@
-$(function() {
+$(document).ready(function() {
   var $recn = $('select.recn');
   var $recv = $('select.recv');
   $recn.change(function() {

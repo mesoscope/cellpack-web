@@ -1,17 +1,17 @@
 extends modify
 
+block subhead
+  script(src="javascripts/jquery-2.1.1.js")
+  script(src="javascripts/newrow.js")
+
 block table
-  form(action='/modified', method='post')
-    div(align="middle")
-      button(type="submit") Commit Changes
-    br
-    br
+  form(action='/committed', method='post')
     each val, arrIndex in tableTree
       div(id="tableContainer")
         div(id="tableLabel", style="float:left", align="center")
           h2= val.tablename
         div(id="tableButtons", style="float:right", align="center")
-          button(type="button") Save as New Version
+          button(type="button", class="tableButton") Save as New Version
         div(id="tableContents", style="float:none", align="center")
           table(border="1")
             tr
@@ -25,3 +25,7 @@ block table
                   input(type='text', placeholder='#{optionval}', name=val.tablename+'-'+val.tableversion+'-'+'#{optionlabel}')
       br
       br
+    div(align="middle")
+      button(type="submit", id="commitButton") Commit Changes
+    br
+    br

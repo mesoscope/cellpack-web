@@ -36,14 +36,14 @@ app.get('/', routes.index(db));
 
 app.get('/modify', routes.modify(db));
 app.post('/modify', routes.modify(db));
+
 // called from modifyt.jade
 app.post('/modified', routes.modified(db));
+
+
 // this is called from modified.jade
 // refactor so this is reached from modified in index.js via render call
-//app.post('/committed', routes.committed(db));
-
-app.get('/newrecipe', routes.newrecipe(db));
-app.post('/newrecipe', routes.createnewrecipe(db));
+app.post('/committed', routes.committed(db));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
