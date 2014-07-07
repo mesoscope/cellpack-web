@@ -7,25 +7,25 @@ block subhead
 block table
   form(action='/committed', method='post')
     each val, arrIndex in tableTree
-      div(id="tableContainer")
-        div(id="tableLabel", style="float:left", align="center")
+      div
+        div(style="float:left", align="center")
           h2= val.tablename
-        div(id="tableButtons", style="float:right", align="center")
-          button(type="button", class="tableButton") Save as New Version
-        div(id="tableContents", style="float:none", align="center")
-          table(border="1")
-            tr
+        div(style="float:right", align="center")
+          button(type="button", class="saveButton", data-recname=val.tablename) Save as New Version
+        div(style="float:none", align="center")
+          table(border="1", id=val.tablename+'-table')
+            tr(id=val.tablename+'-labelrow')
               th Version
               each optionval, optionlabel in val.tableoptions
                 th= optionlabel
-            tr
+            tr(class=val.tablename+'-valuerow')
               td= val.tableversion
               each optionval, optionlabel in val.tableoptions
                 td
-                  input(type='text', placeholder='#{optionval}', name=val.tablename+'-'+val.tableversion+'-'+'#{optionlabel}')
+                  input(type='text', value="#{optionval}")
       br
       br
     div(align="middle")
-      button(type="submit", id="commitButton") Commit Changes
+      button(type="submit", id="commitButton", data-topname=topName, data-topversion=topVersion) Commit Changes
     br
     br
