@@ -1,8 +1,4 @@
-extends modify
 
-block subhead
-  script(src="javascripts/jquery-2.1.1.js")
-  script(src="javascripts/newrow.js")
 
 block table
   form(action='/committed', method='post')
@@ -23,9 +19,3 @@ block table
               each optionval, optionlabel in val.tableoptions
                 td
                   input(type='text', placeholder="#{optionval}", val="")
-      br
-      br
-    div(align="middle")
-      button(type="submit", id="commitButton", data-topname=topName, data-topversion=topVersion) Commit Changes
-    br
-    br

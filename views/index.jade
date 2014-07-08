@@ -2,16 +2,14 @@ extends layout
 
 block subhead
   script(src="javascripts/jquery-2.1.1.js")
-  script(type='text/javascript').
-    var local_data = !{JSON.stringify(recipeData)};
-  script(src="javascripts/modify.js")
+  script(src="javascripts/versioner.js")
 
 block content
   div(id="versioncontain", style="height:75px", align="middle")
     h2 View autoPACK Recipe &nbsp
       form(method='post')
         select(name='recname', class='recn')
-          each rva, rn in recipeData
+          each rn, index in recNames
             option(value=rn)= rn
         select(name='recversion', class='recv')
         select

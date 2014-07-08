@@ -33,14 +33,11 @@ if ('development' == app.get('env')) {
 }
 
 app.get('/', routes.index(db));
-
+app.post('/versioner', routes.versioner(db));
 app.get('/modify', routes.modify(db));
-app.post('/modify', routes.modify(db));
+app.post('/tabler', routes.tabler(db));
+app.post('/commit', routes.commit(db));
 
-
-// this is called from modified.jade
-// refactor so this is reached from modified in index.js via render call
-app.post('/committed', routes.committed(db));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
