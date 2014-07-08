@@ -26,36 +26,6 @@ exports.modify = function(db) {
   };
 };
 
-exports.modified = function(db) {
-  return function(req, res) {
-
-    var collection = db.get('recipes');
-    var submittedID = req.body['name']+'-'+req.body['version'].split('.').join('_');
-    collection.find({'identifier': submittedID}, function(e, docs) {
-      var different = false;
-      for (var i = 0; i < req.body['optionValues'].length; i++) {
-        if (!different && req.body['optionValues'][i] != docs[0]['options'][Object.keys(docs[0]['options'])[i]]) {
-          different = true;
-        }
-      }
-      
-
-      if (different) {
-	var newR = {};
-        var newVersion = req.body['version'].split('.')
-        newVersion[2] = parseInt(newVersion[2]) + 1
-        newR['name'] = req.body['name'];
-        newR['version'] = newVersion.join('.');
-        newR['optionValues'] = req.body['optionValues'];
-        //console.log(newR);
-        res.send(newR);
-      } else {
-        res.send('Please change recipe before saving!');
-      }
-
-    });
-  };
-};
 
 exports.committed = function(db) {
   return function(req, res) {

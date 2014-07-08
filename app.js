@@ -37,9 +37,6 @@ app.get('/', routes.index(db));
 app.get('/modify', routes.modify(db));
 app.post('/modify', routes.modify(db));
 
-// called from modifyt.jade
-app.post('/modified', routes.modified(db));
-
 
 // this is called from modified.jade
 // refactor so this is reached from modified in index.js via render call
