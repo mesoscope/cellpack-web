@@ -44,6 +44,17 @@ exports.tabler = function(db) {
 exports.commit = function(db) {
   return function(req, res) {
     console.log(req.body);
-    res.redirect('/modify');
+    var previousVers = req.body['identifier'].split('-')[1].split('_');
+    previousVers[2] = parseInt(previousVers[2]) - 1;
+    var previousID = req.body['identifier'].split('-')[0]+'-'+previousVers.join('_');
+    console.log(previousID);
+    var collection = db.get('recipes');
+    collection.find({'identifier': previousID}, function(e, docs) {
+      req.body['children'] = docs[0]['children'];
+      console.log(req.body);
+      collection.insert(req.body, function(e, docs) {
+        res.redirect('/modify');
+      });
+    });
   };
 };
