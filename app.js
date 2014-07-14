@@ -35,6 +35,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index(db));
 app.post('/versioner', routes.versioner(db));
 app.get('/modify', routes.modify(db));
+app.post('/hierarchy', routes.hierarchy(db));
 app.post('/tabler', routes.tabler(db));
 app.post('/commit', routes.commit(db));
 

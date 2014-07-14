@@ -31,10 +31,17 @@ $('#submitter').click(function() {
     recOptions[optionLabels[i]] = optionValues[i];
   }
 
+  var hierarchy = [];
+  $('.sideLink').each(function(index) {
+    if (hierarchy.indexOf(recName) < 0) {
+      hierarchy.push($(this).html());
+    }
+  });
+
   if (edited) {
     var newIdentifier = recName + '-' + recVersion.split('.').join('_');
     var newRecipe = {'identifier': newIdentifier, 'options': recOptions};
-    $.post('/commit', newRecipe);
+    $.post('/commit', {'newRecipe': newRecipe, 'hierarchy': hierarchy});
   } else {
     alert('Please edit recipe before updating!');
   }
