@@ -54,7 +54,6 @@ exports.tabler = function(db) {
 
 exports.commit = function(db) {
     return function(req, res) {
-        console.log(req.body);
         
         var previousVers = req.body['newRecipe']['identifier'].split('-')[1].split('_');
         previousVers[2] = parseInt(previousVers[2]) - 1;
@@ -62,11 +61,14 @@ exports.commit = function(db) {
 
         var collection = db.get('recipes');
         collection.find({}, function(e, docs) {
-            // FIX THIS 
-            //req.body['newRecipe']['children'] = docs[0]['children'];
+            var newRecipes = [{'identifier': req.body['newRecipe']['identifier'], 'options': req.body['newRecipe']['options']}];
+            newRecipes[0]['children'] = helpers.getChildrenList(docs, previousID);
             var treeEdits = helpers.getDescendents(docs, req.body['topLevel'], previousID);
-            treeEdits[0] = req.body['newRecipe']['identifier'];
             var treeRecipes = helpers.buildTreeRecipes(docs, treeEdits);
+            newRecipes = newRecipes.concat(treeRecipes);
+            for (var i = 0; i < newRecipes.length; i++) {
+                collection.insert(newRecipes[i]);
+            }
         });
     };
 };
