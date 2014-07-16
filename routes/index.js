@@ -64,7 +64,9 @@ exports.commit = function(db) {
         collection.find({}, function(e, docs) {
             // FIX THIS 
             //req.body['newRecipe']['children'] = docs[0]['children'];
-            console.log(helpers.getDescendents(docs, req.body['topLevel'], previousID));
+            var treeEdits = helpers.getDescendents(docs, req.body['topLevel'], previousID);
+            treeEdits[0] = req.body['newRecipe']['identifier'];
+            var treeRecipes = helpers.buildTreeRecipes(docs, treeEdits);
         });
     };
 };
