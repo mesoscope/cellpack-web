@@ -1,4 +1,4 @@
-autopack-web
-============
+cellpack
+========
 
-web app for autopack software
+simulated molecular biology software
