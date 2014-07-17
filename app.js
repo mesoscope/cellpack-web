@@ -4,9 +4,14 @@ var http = require('http');
 var path = require('path');
 
 // Setting up Mongo, etc.
-var mongo = require('mongodb');
-var monk = require('monk');
-var db = monk('localhost:27017/autopack');
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/cellpack');
+var recipeSchema = mongoose.Schema({
+    recipeIdentifier: String,
+    recipeOptions: mongoose.Schema.Types.Mixed,
+    recipeChildren: []
+}, {collection: 'recipes'});
+var Recipe = mongoose.model('Recipe', recipeSchema);
 
 var app = express();
 
@@ -27,12 +32,12 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index(db));
-app.post('/versioner', routes.versioner(db));
-app.get('/modify', routes.modify(db));
-app.post('/hierarchy', routes.hierarchy(db));
-app.post('/tabler', routes.tabler(db));
-app.post('/commit', routes.commit(db));
+app.get('/', routes.index(Recipe));
+//app.post('/versioner', routes.versioner(db));
+//app.get('/modify', routes.modify(db));
+//app.post('/hierarchy', routes.hierarchy(db));
+//app.post('/tabler', routes.tabler(db));
+//app.post('/commit', routes.commit(db));
 
 
 http.createServer(app).listen(app.get('port'), function(){

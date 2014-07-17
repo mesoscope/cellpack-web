@@ -1,11 +1,9 @@
 var helpers = require('utils');
 
-exports.index = function(db) {
+exports.index = function(recipeModel) {
     return function(req, res) {
-        var collection = db.get('recipes');
-        collection.find({}, function(e, docs) {
-            var recNames = helpers.getDocNames(docs);
-            res.render('index', {'title': 'cellPACK', 'recNames': recNames});
+        recipeModel.find(function (e, recipes) {
+            console.log(recipes);
         });
     };
 };
