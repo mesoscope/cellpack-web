@@ -40,7 +40,7 @@ $('#submitter').click(function() {
      
     if (edited) {
         var newIdentifier = recName + '-' + recVersion.split('.').join('_');
-        var newRecipe = {'identifier': newIdentifier, 'options': recOptions};
+        var newRecipe = {'recipeIdentifier': newIdentifier, 'recipeOptions': recOptions};
         $.post('/commit', {'newRecipe': newRecipe, 'topLevel': topLevel});
     } else {
         alert('Please edit recipe before updating!');

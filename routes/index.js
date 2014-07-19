@@ -55,12 +55,13 @@ exports.commit = function(recipeModel) {
 
         recipeModel.find({}, function(e, recipes) {
             var newRecipes = [{'recipeIdentifier': req.body['newRecipe']['identifier'], 'recipeOptions': req.body['newRecipe']['options']}];
-            newRecipes[0]['recipeChildren'] = helpers.getChildrenList(docs, previousID);
-            var treeEdits = helpers.getDescendents(docs, req.body['topLevel'], previousID);
-            var treeRecipes = helpers.buildTreeRecipes(docs, treeEdits);
+            newRecipes[0]['recipeChildren'] = helpers.getChildrenList(recipes, previousID);
+            var treeEdits = helpers.getDescendents(recipes, req.body['topLevel'], previousID);
+            var treeRecipes = helpers.buildTreeRecipes(recipes, treeEdits);
             newRecipes = newRecipes.concat(treeRecipes);
             for (var i = 0; i < newRecipes.length; i++) {
-                collection.insert(newRecipes[i]);
+                var newRecipe = recipeModel(newRecipes[i]);
+                newRecipe.save();
             }
         });
     };
