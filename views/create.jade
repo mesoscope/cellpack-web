@@ -7,5 +7,23 @@ block content
     div(id="createInterface", align="middle")
         h2 Create New Cellpack Recipe &nbsp
         form(id="createForm", action="/create", method="post")
+            h3 Recipe Name
             input(type="text", name="recname")
+            br
+            div(id="createOptions")
+                h3 Recipe Options
+                input(type="text", name="optionVal")
+                input(type="text", name="optionLabel")
+                br
+                br
+                button(type="button") Add More Recipe Options
+                br
+            div(id="createChildren")
+                h3 Recipe Children
+                select
+                select
+                br
+                br
+                button(type="button") Add More Recipe Children
+                br
             button(type="submit") Create New Recipe
