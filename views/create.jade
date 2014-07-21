@@ -2,28 +2,37 @@ extends layout
 
 block subhead
     script(src="javascripts/jquery-2.1.1.js")
+    script(src="javascripts/createrow.js")
+    script(src="javascripts/createchild.js")
 
 block content
     div(id="createInterface", align="middle")
-        h2 Create New Cellpack Recipe &nbsp
         form(id="createForm", action="/create", method="post")
-            h3 Recipe Name
-            input(type="text", name="recname")
-            br
-            div(id="createOptions")
-                h3 Recipe Options
-                input(type="text", name="optionVal")
-                input(type="text", name="optionLabel")
+            div(id="recFormDiv")
+                div(id="recFormHeader", align="middle")
+                    h2 Create New Cellpack Recipe &nbsp
+                    h3 Recipe Name
+                    input(type="text", name="recname")
+                    br
+                    br
+                    button(type="submit") Create New Recipe
                 br
                 br
-                button(type="button") Add More Recipe Options
+                div(id="recOptions", style="float:left;width:48%")
+                    h3 Recipe Options
+                    h4 Option Label &nbsp Option Value
+                    input(type="text", name="optionVal")
+                    input(type="text", name="optionLabel")
+                    br
+                    br
+                    button(type="button") Add More Recipe Options
+                div(id="recChildren", style="float:right;width:48%")
+                    h3 Recipe Children
+                    h4 Recipe Child &nbsp Child Version
+                    select
+                    select
+                    br
+                    br
+                    button(type="button") Add More Recipe Children
                 br
-            div(id="createChildren")
-                h3 Recipe Children
-                select
-                select
                 br
-                br
-                button(type="button") Add More Recipe Children
-                br
-            button(type="submit") Create New Recipe
