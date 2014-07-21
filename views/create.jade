@@ -1,0 +1,11 @@
+extends layout
+
+block subhead
+    script(src="javascripts/jquery-2.1.1.js")
+
+block content
+    div(id="createInterface", align="middle")
+        h2 Create New Cellpack Recipe &nbsp
+        form(id="createForm", action="/create", method="post")
+            input(type="text", name="recname")
+            button(type="submit") Create New Recipe

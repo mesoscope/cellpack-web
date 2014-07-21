@@ -35,10 +35,14 @@ if ('development' == app.get('env')) {
 
 app.get('/', routes.index(Recipe));
 app.post('/versioner', routes.versioner(Recipe));
+
 app.get('/modify', routes.modify(Recipe));
 app.post('/hierarchy', routes.hierarchy(Recipe));
 app.post('/tabler', routes.tabler(Recipe));
 app.post('/commit', routes.commit(Recipe));
+
+app.get('/create', routes.create(Recipe));
+app.post('/create', routes.createRecipe(Recipe));
 
 
 http.createServer(app).listen(app.get('port'), function(){
