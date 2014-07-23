@@ -68,7 +68,10 @@ exports.commit = function(recipeModel) {
 
 exports.create = function(recipeModel) {
     return function(req, res) {
-        res.render('create', {'title': 'Create New Recipe'});
+        recipeModel.find(function(e, recipes) {
+            var recNames = helpers.getDocNames(recipes);
+            res.render('create', {'title': 'Create New Recipe', 'recNames': recNames});
+        });
     };
 };
 

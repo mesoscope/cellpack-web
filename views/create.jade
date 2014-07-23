@@ -2,8 +2,8 @@ extends layout
 
 block subhead
     script(src="javascripts/jquery-2.1.1.js")
-    script(src="javascripts/createrow.js")
-    script(src="javascripts/createchild.js")
+    script(src="javascripts/optionrow.js")
+    script(src="javascripts/versioner.js")
 
 block content
     div(id="createInterface", align="middle")
@@ -14,27 +14,27 @@ block content
             br
             br
             br
-            br
             div(id="recOptions", style="float:left;width:48%")
                 h3 Recipe Options
                 h4 Option Label &nbsp Option Value
                 div(id="recOptionFields")
-                input(type="text", class="optionLabel")
-                input(type="text", class="optionVal")
+                    input(type="text", class="optionLabs", name="optionLab")
+                    input(type="text", class="optionVals", name="optionVal")
                 br
                 br
                 button(type="button", id="recOptioner") Add More Recipe Options
-            div(id="recChildren", style="float:right;width:48%;border:2px solid")
+            div(id="recChildren", style="float:right;width:48%")
                 h3 Recipe Children
                 h4 Recipe Child &nbsp Child Version
-                select
-                select
+                select(name="recname", class="recn")
+                    each rn, index in recNames
+                        option(value=rn)= rn
+                select(name="recversion", class="recv")
                 br
                 br
                 button(type="button") Add More Recipe Children
-            br
-            br
-            br
-            br
-            div(id="formFooter", align="middle", style="border:1px solid;clear:both")
+            div(id="formFooter", align="middle", style="clear:both")
+                br
+                br
+                br
                 button(type="submit") Create New Recipe
