@@ -27,10 +27,10 @@ block content
                 h3 Recipe Children
                 h4 Recipe Child &nbsp Child Version
                 div(id="recChildrenFields")
-                    select(name="recname", class="recn")
+                    select(name="childname", class="recn")
                         each rn, index in recNames
                             option(value=rn)= rn
-                    select(name="recversion", class="recv")
+                    select(name="childversion", class="recv")
                 br
                 br
                 button(type="button", id="recChilder") Add More Recipe Children
