@@ -1,6 +1,11 @@
 $('#recChilder').click(function() {
-    // Fix this?
-    $('#recChildrenFields').append('<br>', $('.recn').first().clone());
+    $('#childrenHeader').show()
+    var nameSelector = '<br><select name="childname" class="recn">'
+    $.each(recNames, function(index, recn) {
+        nameSelector = nameSelector + '<option>'+recn+'</option>';
+    })
+    nameSelector = nameSelector + '</select>';
+    $('#recChildrenFields').append(nameSelector);
     $('#recChildrenFields').append('<select name="childversion" class="recv"></select>');
     $('.recn').last().change(function() {
         $.post('/versioner', {'recipename': $(this).val()}, function(data) {

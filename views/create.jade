@@ -2,8 +2,9 @@ extends layout
 
 block subhead
     script(src="javascripts/jquery-2.1.1.js")
+    script.
+        var recNames = !{JSON.stringify(recNames)}
     script(src="javascripts/create.js")
-    script(src="javascripts/versioner.js")
 
 block content
     div(id="createInterface", align="middle")
@@ -25,15 +26,11 @@ block content
                 button(type="button", id="recOptioner") Add More Recipe Options
             div(id="recChildren", style="float:right;width:48%")
                 h3 Recipe Children
-                h4 Recipe Child &nbsp Child Version
+                h4(id="childrenHeader") Recipe Child &nbsp Child Version
                 div(id="recChildrenFields")
-                    select(name="childname", class="recn")
-                        each rn, index in recNames
-                            option(value=rn)= rn
-                    select(name="childversion", class="recv")
                 br
                 br
-                button(type="button", id="recChilder") Add More Recipe Children
+                button(type="button", id="recChilder") Add Recipe Children
             div(id="formFooter", align="middle", style="clear:both")
                 br
                 br

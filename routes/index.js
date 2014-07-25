@@ -1,5 +1,6 @@
 var helpers = require('utils');
 var undersc = require('underscore');
+var fs = require('fs');
 
 exports.index = function(recipeModel) {
     return function(req, res) {
@@ -110,5 +111,19 @@ exports.createRecipe = function(recipeModel) {
             createdRecipe.save();
         }
         res.redirect('/');
+    };
+};
+
+exports.downloadRecipe = function(recipeModel) {
+    return function(req, res) {
+        var requestID = req.body['recname']+'-'+req.body['recversion'].split('.').join('_');
+        if (fs.exists('public/recipes/'+requestID+'.json')) {
+            res.download('public/recipes/'+requestID+'.json');
+        } else {
+            recipeModel.find({'recipeIdentifier': requestID}, function(e, recipes) {
+                fs.writeFile('public/recipes/'+requestID+'.json', JSON.stringify(recipes[0]));
+            });
+            res.download('public/recipes/'+requestID+'.json');
+        }
     };
 };
