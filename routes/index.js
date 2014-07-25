@@ -1,4 +1,5 @@
 var helpers = require('utils');
+var undersc = require('underscore');
 
 exports.index = function(recipeModel) {
     return function(req, res) {
@@ -77,7 +78,37 @@ exports.create = function(recipeModel) {
 
 exports.createRecipe = function(recipeModel) {
     return function(req, res) {
-        console.log(req.body);
+        if (req.body['recname'] != '') {
+            var newRecipe = {'recipeIdentifier': req.body['recname']+'-0_0_0'};
+
+            if (req.body['optionLab'] != '') {
+                newRecipe['recipeOptions'] = {};
+                if (req.body['optionLab'] instanceof Array) {
+                    for (var i = 0; i < req.body['optionLab'].length; i++) {
+                        newRecipe['recipeOptions'][req.body['optionLab'][i]] = req.body['optionVal'][i];
+                    }
+                } else {
+                    newRecipe['recipeOptions'][req.body['optionLab']] = req.body['optionVal'];
+                }
+            }
+
+            if (req.body.hasOwnProperty('childname')) {
+                if (req.body['childname'] instanceof Array) {
+                    var childidentifiers = [];
+                    for (var i = 0; i < req.body['childname'].length; i++) {
+                        childidentifiers.push(req.body['childname'][i]+'-'+req.body['childversion'][i].split('.').join('_'));
+                    }
+                    newRecipe['recipeChildren'] = childidentifiers;
+                } else {
+                    newRecipe['recipeChildren'] = [req.body['childname']+'-'+req.body['childversion'].split('.').join('_')];
+                }
+            } else {
+                newRecipe['recipeChildren'] = [];
+            }
+            console.log(newRecipe);
+            var createdRecipe = new recipeModel(newRecipe);
+            createdRecipe.save();
+        }
         res.redirect('/');
     };
 };
