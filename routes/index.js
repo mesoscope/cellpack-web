@@ -117,13 +117,22 @@ exports.createRecipe = function(recipeModel) {
 exports.downloadRecipe = function(recipeModel) {
     return function(req, res) {
         var requestID = req.body['recname']+'-'+req.body['recversion'].split('.').join('_');
-        if (fs.exists('public/recipes/'+requestID+'.json')) {
-            res.download('public/recipes/'+requestID+'.json');
-        } else {
-            recipeModel.find({'recipeIdentifier': requestID}, function(e, recipes) {
-                fs.writeFile('public/recipes/'+requestID+'.json', JSON.stringify(recipes[0]));
-            });
-            res.download('public/recipes/'+requestID+'.json');
-        }
+        recipeModel.find({}, function(e, recipes) {
+            var downloadList = helpers.getIdentifierList(recipes, requestID);
+            for (var i = 0; i < downloadList.length; i++) {
+                console.log(downloadList[i]);
+                if (fs.exists('public/recipes/'+downloadList[i]+'.json')) {
+                    console.log('Exists');
+                    res.download('public/recipes/'+downloadList[i]+'.json');
+                } else {
+                    for (var j = 0; j < recipes.length; i++) {
+                        if (recipes[j]['recipeIdentifier'] == downloadList[i]) {
+                            fs.writeFile('public/recipes/'+downloadList[i]+'.json', JSON.stringify(recipes[j])); 
+                            res.download('public/recipes/'+downloadList[i]+'.json');
+                        }
+                    }
+                }
+            }
+        });
     };
 };
