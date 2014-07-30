@@ -129,8 +129,8 @@ exports.downloadRecipe = function(recipeModel) {
                             }
                         }
                     }
-                    fs.writeFile('public/recipes/'+requestID+'-pack.json', JSON.stringify(recipePack, null, 4), function(err) {
-                        res.download('public/recipes/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
+                    fs.writeFile('recipes/'+requestID+'-pack.json', JSON.stringify(recipePack, null, 4), function(err) {
+                        res.download('recipes/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
                             if (err) {
                                 console.log(err);
                                 res.redirect('/');
