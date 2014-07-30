@@ -119,7 +119,7 @@ exports.downloadRecipe = function(recipeModel) {
         var requestID = req.body['recname']+'-'+req.body['recversion'].split('.').join('_');
         recipeModel.find({}, function(e, recipes) {
             var dList = helpers.getFlatHierarchy(recipes, requestID);
-            res.download('public/recipes/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
+            res.download('./public/recipes/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
                 if (err) {
                     var recipePack = {};
                     for (var i = 0; i < dList.length; i++) {
@@ -129,8 +129,8 @@ exports.downloadRecipe = function(recipeModel) {
                             }
                         }
                     }
-                    fs.writeFile('public/recipes/'+requestID+'-pack.json', JSON.stringify(recipePack, null, 4), function(err) {
-                        res.download('public/recipes/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
+                    fs.writeFile('./public/recipes/'+requestID+'-pack.json', JSON.stringify(recipePack, null, 4), function(err) {
+                        res.download('./public/recipes/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
                             if (err) {
                                 console.log(err);
                             }
