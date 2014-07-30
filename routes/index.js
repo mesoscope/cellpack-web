@@ -101,12 +101,12 @@ exports.createRecipe = function(recipeModel) {
                     }
                     newRecipe['recipeChildren'] = childidentifiers;
                 } else {
-                    newRecipe['recipeChildren'] = [req.body['childname']+'-'+req.body['childversion'].split('.').join('_')];
-                }
-            } else {
-                newRecipe['recipeChildren'] = [];
-            }
-            console.log(newRecipe);
+                    newRecipe['recipeChildren'] = [req.body['childname']+'-'+req.body['childversion'].split('.').join('_')]; 
+                } 
+            } else { 
+                newRecipe['recipeChildren'] = []; 
+            } 
+            console.log(newRecipe); 
             var createdRecipe = new recipeModel(newRecipe);
             createdRecipe.save();
         }
@@ -118,21 +118,26 @@ exports.downloadRecipe = function(recipeModel) {
     return function(req, res) {
         var requestID = req.body['recname']+'-'+req.body['recversion'].split('.').join('_');
         recipeModel.find({}, function(e, recipes) {
-            var downloadList = helpers.getIdentifierList(recipes, requestID);
-            for (var i = 0; i < downloadList.length; i++) {
-                console.log(downloadList[i]);
-                if (fs.exists('public/recipes/'+downloadList[i]+'.json')) {
-                    console.log('Exists');
-                    res.download('public/recipes/'+downloadList[i]+'.json');
-                } else {
-                    for (var j = 0; j < recipes.length; i++) {
-                        if (recipes[j]['recipeIdentifier'] == downloadList[i]) {
-                            fs.writeFile('public/recipes/'+downloadList[i]+'.json', JSON.stringify(recipes[j])); 
-                            res.download('public/recipes/'+downloadList[i]+'.json');
+            var dList = helpers.getFlatHierarchy(recipes, requestID);
+            res.download('public/recipes/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
+                if (err) {
+                    var recipePack = {};
+                    for (var i = 0; i < dList.length; i++) {
+                        for (var j = 0; j < recipes.length; j++) {
+                            if (dList[i] == recipes[j]['recipeIdentifier']){
+                                recipePack[dList[i]] = recipes[j];
+                            }
                         }
                     }
+                    fs.writeFile('public/recipes/'+requestID+'-pack.json', JSON.stringify(recipePack, null, 4), function(err) {
+                        res.download('public/recipes/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
+                            if (err) {
+                                console.log(err);
+                            }
+                        });
+                    });
                 }
-            }
+            });
         });
     };
 };

@@ -3,7 +3,6 @@ var routes = require('./routes');
 var http = require('http');
 var path = require('path');
 
-// Setting up Mongo, etc.
 var mongoose = require('mongoose');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/cellpack';
 mongoose.connect(mongoUri);
@@ -16,7 +15,6 @@ var Recipe = mongoose.model('Recipe', recipeSchema);
 
 var app = express();
 
-// all environments
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
