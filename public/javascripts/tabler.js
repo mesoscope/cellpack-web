@@ -68,7 +68,8 @@ $.post('/tabler', {'recipename': recipeName, 'recipevers': recipeVersion}, funct
         if (edited) {
             var newIdentifier = recName + '-' + recVersion.split('.').join('_');
             var newRecipe = {'recipeIdentifier': newIdentifier, 'recipeOptions': recOptions};
-            $.post('/commit', {'newRecipe': newRecipe, 'topLevel': topLevel});
+            $.post('/commit', {'newRecipe': newRecipe, 'topLevel': topLevel})
+            //window.location.replace('/');
         } else {
             alert('Please edit recipe before updating!');
         }

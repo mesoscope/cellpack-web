@@ -1,0 +1,15 @@
+{
+    "ENV_4nco-0_0_1": {
+        "recipeIdentifier": "ENV_4nco-0_0_1",
+        "recipeOptions": {
+            "gradient": "gradRadSPIKE",
+            "cutoff_surface": "142.213",
+            "cutoff_boundary": "1",
+            "coordsystem": "left",
+            "Type": "MultiSphere"
+        },
+        "_id": "53da99de39cc6626a6efe48c",
+        "__v": 0,
+        "recipeChildren": []
+    }
+}

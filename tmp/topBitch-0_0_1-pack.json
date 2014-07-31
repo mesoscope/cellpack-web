@@ -1,0 +1,22 @@
+{
+    "topBitch-0_0_1": {
+        "recipeIdentifier": "topBitch-0_0_1",
+        "recipeOptions": {
+            "recLab": "recVal"
+        },
+        "_id": "53dac3cd868a9fc9ace4c28e",
+        "__v": 0,
+        "recipeChildren": [
+            "bottomBitch-0_0_1"
+        ]
+    },
+    "bottomBitch-0_0_1": {
+        "recipeIdentifier": "bottomBitch-0_0_1",
+        "recipeOptions": {
+            "testLab": "tester"
+        },
+        "_id": "53dac3cd868a9fc9ace4c28d",
+        "__v": 0,
+        "recipeChildren": []
+    }
+}
