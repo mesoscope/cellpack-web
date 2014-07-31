@@ -1,24 +1,24 @@
 extends layout
 
 block subhead
-  script(src="javascripts/jquery-2.1.1.js")
-  script(src="javascripts/versioner.js")
-  script(src="javascripts/modify.js")
+    script(src="javascripts/jquery-2.1.1.js")
+    script(src="javascripts/versioner.js")
+    script(src="javascripts/modify.js")
 
 block content
-  div(id="interface", align="middle")
-    h2 Load autoPACK Recipe Table &nbsp
-    select(name='recname', class='recn')
-      each rn, index in recNames
-        option(value=rn)= rn
-    select(name='recversion', class="recv")
-    button(id="loader", type="button") Load Table
-  br
-  br
-  div(id="editInterface" style="height:400px")
-    div(id="recipeTree", style="float:left")
-      ul(id="recipeList")
-    div(id="tableInterface", style="float:right")
-      div(id="recTableHeader", align="middle")
-      div(id="recipeTable", align="middle")
-        form(id="recipeForm")
+    div(id="interface", align="middle")
+        h2 Load autoPACK Recipe Table &nbsp
+        select(name='recname', class='recn')
+            each rn, index in recNames
+                option(value=rn)= rn
+        select(name='recversion', class="recv")
+        button(id="loader", type="button") Load Table
+    br
+    br
+    div(id="editInterface" style="height:400px")
+        div(id="recipeTree", style="float:left")
+            ul(id="recipeList")
+        div(id="tableInterface", style="float:right")
+            div(id="recTableHeader", align="middle")
+            div(id="recipeTable", align="middle")
+                form(id="recipeForm")
