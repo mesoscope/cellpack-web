@@ -11,8 +11,9 @@ $.post('/tabler', {'recipename': recipeName, 'recipevers': recipeVersion}, funct
     var recTable = '<table border="1" id="'+tableName+'-referencetable">';
     var recLabels = '<tr id="'+tableName+'-referencelabels"><th>Version</th>';
     var recValues = '<tr id="'+tableName+'-referencevalues"><td>'+tableVersion+'</td>';
+
     var newTableVersion = tableVersion.split('.');
-    newTableVersion[2] = parseInt(newTableVersion[2])+1;
+    newTableVersion[2] = 'X';
     var dyValues = '<tr id="'+tableName+'-dynamicvalues"><td>'+newTableVersion.join('.')+'</td>';
     
     
@@ -68,8 +69,9 @@ $.post('/tabler', {'recipename': recipeName, 'recipevers': recipeVersion}, funct
         if (edited) {
             var newIdentifier = recName + '-' + recVersion.split('.').join('_');
             var newRecipe = {'recipeIdentifier': newIdentifier, 'recipeOptions': recOptions};
-            $.post('/commit', {'newRecipe': newRecipe, 'topLevel': topLevel})
-            //window.location.replace('/');
+            $.post('/commit', {'newRecipe': newRecipe, 'derivedIdentifier': data['recipeIdentifier'],'topLevel': topLevel}, function(data) {
+                location.reload();
+            });
         } else {
             alert('Please edit recipe before updating!');
         }
