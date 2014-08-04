@@ -49,21 +49,17 @@ exports.tabler = function(recipeModel) {
 };
 
 exports.commit = function(recipeModel) {
-    return function(req, res) { 
-        var previousVers = req.body['newRecipe']['recipeIdentifier'].split('-')[1].split('_');
-        previousVers[2] = parseInt(previousVers[2]) - 1;
-        var previousID = req.body['newRecipe']['recipeIdentifier'].split('-')[0]+'-'+previousVers.join('_'); 
-
+    return function(req, res) {  
         recipeModel.find({}, function(e, recipes) {
-            var newRecipes = [{'recipeIdentifier': req.body['newRecipe']['recipeIdentifier'], 'recipeOptions': req.body['newRecipe']['recipeOptions']}];
-            newRecipes[0]['recipeChildren'] = helpers.getChildrenList(recipes, previousID);
-            var treeEdits = helpers.getDescendents(recipes, req.body['topLevel'], previousID);
+
+            var nextVersion = helpers.getLastVersion(recipes, req.body['newRecipe']['recipeIdentifier']);
+            var newRecipes = [{'recipeIdentifier': nextVersion, 'recipeOptions': req.body['newRecipe']['recipeOptions']}];
+            newRecipes[0]['recipeChildren'] = helpers.getChildrenList(recipes, req.body['derivedIdentifier']);
+            var treeEdits = helpers.getDescendents(recipes, req.body['topLevel'], req.body['derivedIdentifier']);
             var treeRecipes = helpers.buildTreeRecipes(recipes, treeEdits);
             newRecipes = newRecipes.concat(treeRecipes);
-            for (var i = 0; i < newRecipes.length; i++) {
-                var newRecipe = recipeModel(newRecipes[i]);
-                newRecipe.save();
-            }
+            recipeModel.create(newRecipes);
+            res.send('Finished');
         });
     };
 };
@@ -106,7 +102,6 @@ exports.createRecipe = function(recipeModel) {
             } else { 
                 newRecipe['recipeChildren'] = []; 
             } 
-            console.log(newRecipe); 
             var createdRecipe = new recipeModel(newRecipe);
             createdRecipe.save();
         }
