@@ -8,24 +8,20 @@ $.post('/tabler', {'recipename': recipeName, 'recipevers': recipeVersion}, funct
     var tableVersion = data['recipeIdentifier'].split('-')[1].split('_').join('.');
     
     $('#recTableHeader').append('<h3>'+tableName+'</h3>');
-    var recTable = '<table border="1" id="'+tableName+'-referencetable">';
-    var recLabels = '<tr id="'+tableName+'-referencelabels"><th>Version</th>';
-    var recValues = '<tr id="'+tableName+'-referencevalues"><td>'+tableVersion+'</td>';
 
     var newTableVersion = tableVersion.split('.');
     newTableVersion[2] = 'X';
-    var dyValues = '<tr id="'+tableName+'-dynamicvalues"><td>'+newTableVersion.join('.')+'</td>';
-    
+    var recTable = '<table border="1" id="'+tableName+'-referencetable"><tr id="'+tableName+'-versionrow"><th>Version</th><th>'+tableVersion+'</th><th>'+newTableVersion.join('.')+'</th></tr>';
+
+
     
     $.each(Object.keys(data['recipeOptions']), function(i, val) {
-        recLabels = recLabels + '<th>'+ val + '</th>';
-        recValues = recValues + '<td>' + data['recipeOptions'][val] + '</td>';
-        dyValues = dyValues + '<td><input type="text" name="' + val + '" val="" placeholder="' + data['recipeOptions'][val] + '"></td>';
+        recTable = recTable + '<tr><th>'+val+'</th><td id="'+tableName+'-tableLabels">'+data['recipeOptions'][val]+'</td><td><input type="text" name="'+val+'" val="" placeholder="'+data['recipeOptions'][val]+'"></td><tr>';
     });
-    recTable = recTable + recLabels + '</tr>' + recValues + '</tr>' + dyValues + '</tr></table>';
+    recTable = recTable + '</table><br><br>';
     
     
-    $('#recipeForm').append(recTable+'<br><br>');
+    $('#recipeForm').append(recTable);
     $('#recipeForm').append('<button id="submitter" type="button"> Update </button><br><br>');
     
     $('#submitter').click(function() {
@@ -34,10 +30,8 @@ $.post('/tabler', {'recipename': recipeName, 'recipevers': recipeVersion}, funct
         var recOptions = {};
 
         var optionLabels = [];
-        $('#'+recName+'-referencelabels').children().each(function(index) {
-            if (index != 0) {
-                optionLabels.push($(this).html());
-            }
+        $('#'+recName+'-tableLabels').each(function(index) {
+            optionLabels.push($(this).html());
         });
     
         var edited = false;

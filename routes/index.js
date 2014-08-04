@@ -20,11 +20,11 @@ exports.versioner = function(recipeModel) {
     };
 };
 
-exports.modify = function(recipeModel) {
+exports.dev = function(recipeModel) {
     return function(req, res) {
         recipeModel.find(function(e, recipes) {
             var recNames = helpers.getDocNames(recipes);
-            res.render('modify', {'title': 'Modify Recipe', 'recNames': recNames});
+            res.render('dev', {'title': 'Modify Recipe', 'recNames': recNames});
         });
     };
 };

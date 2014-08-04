@@ -33,7 +33,7 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index(Recipe));
 app.post('/versioner', routes.versioner(Recipe));
 
-app.get('/dev', routes.modify(Recipe));
+app.get('/dev', routes.dev(Recipe));
 app.post('/hierarchy', routes.hierarchy(Recipe));
 app.post('/tabler', routes.tabler(Recipe));
 app.post('/commit', routes.commit(Recipe));
