@@ -11,12 +11,12 @@ $.post('/tabler', {'recipename': recipeName, 'recipevers': recipeVersion}, funct
 
     var newTableVersion = tableVersion.split('.');
     newTableVersion[2] = 'X';
-    var recTable = '<table border="1" id="'+tableName+'-referencetable"><tr id="'+tableName+'-versionrow"><th>Version</th><th>'+tableVersion+'</th><th>'+newTableVersion.join('.')+'</th></tr>';
+    var recTable = '<table border="1" id="'+tableName+'-referencetable"><tr id="'+tableName+'-versionrow"><th>Version</th><th>'+tableVersion+'</th><th class="'+tableName+'-tableVals">'+newTableVersion.join('.')+'</th></tr>';
 
 
     
     $.each(Object.keys(data['recipeOptions']), function(i, val) {
-        recTable = recTable + '<tr><th>'+val+'</th><td id="'+tableName+'-tableLabels">'+data['recipeOptions'][val]+'</td><td><input type="text" name="'+val+'" val="" placeholder="'+data['recipeOptions'][val]+'"></td><tr>';
+        recTable = recTable + '<tr><th class="'+tableName+'-tableLabels">'+val+'</th><td>'+data['recipeOptions'][val]+'</td><td><input type="text" name="'+val+'" class="'+tableName+'-tableVals" val="" placeholder="'+data['recipeOptions'][val]+'"></td><tr>';
     });
     recTable = recTable + '</table><br><br>';
     
@@ -30,21 +30,21 @@ $.post('/tabler', {'recipename': recipeName, 'recipevers': recipeVersion}, funct
         var recOptions = {};
 
         var optionLabels = [];
-        $('#'+recName+'-tableLabels').each(function(index) {
+        $('.'+recName+'-tableLabels').each(function(index) {
             optionLabels.push($(this).html());
         });
-    
+
         var edited = false;
         var optionValues = [];
-        $('#'+recName+'-dynamicvalues').children().each(function(index) {
+        $('.'+recName+'-tableVals').each(function(index) {
             if (index == 0) {
                 recVersion = $(this).html();
             } else {
-                if ($(this).children().val() != '') {
+                if ($(this).val() != '') {
                     edited = true;
-                    optionValues.push($(this).children().val());
+                    optionValues.push($(this).val());
                 } else {
-                    optionValues.push($(this).children().attr('placeholder'));
+                    optionValues.push($(this).attr('placeholder'));
                 }
             }
         });

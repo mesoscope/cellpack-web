@@ -51,7 +51,7 @@ exports.tabler = function(recipeModel) {
 exports.commit = function(recipeModel) {
     return function(req, res) {  
         recipeModel.find({}, function(e, recipes) {
-
+            console.log(req.body);
             var nextVersion = helpers.getLastVersion(recipes, req.body['newRecipe']['recipeIdentifier']);
             var newRecipes = [{'recipeIdentifier': nextVersion, 'recipeOptions': req.body['newRecipe']['recipeOptions']}];
             newRecipes[0]['recipeChildren'] = helpers.getChildrenList(recipes, req.body['derivedIdentifier']);
