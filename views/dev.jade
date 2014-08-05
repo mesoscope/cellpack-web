@@ -7,17 +7,22 @@ block subhead
 
 block content
     div(id="interface", align="middle")
-        h2 Load autoPACK Recipe Table &nbsp
-        select(name='recname', class='recn')
-            each rn, index in recNames
-                option(value=rn)= rn
-        select(name='recversion', class="recv")
-        button(id="loader", type="button") Load Table
+        h2 Create version of recipe &nbsp
+            select(name='recname', class='recn')
+                each rn, index in recNames
+                    option(value=rn)= rn
+            select(name='recversion', class="recv")
+            button(id="loader", type="button") Load
+        h2 Create recipe from scratch &nbsp
+            button(id="childer", type="button") Create
     br
     br
     div(id="editInterface" style="height:400px")
         div(id="recipeTree", style="float:left")
-            ul(id="recipeList")
+            div(id="recipeHierarchy")
+                ul(id="recipeList")
+            div(id="hierarchyControl", align="middle")
+                button(id="createChild", type="button") Add Child
         div(id="tableInterface", style="float:right")
             div(id="recTableHeader", align="middle")
             div(id="recipeTable", align="middle")
