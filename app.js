@@ -37,6 +37,7 @@ app.get('/dev', routes.dev(Recipe));
 app.post('/hierarchy', routes.hierarchy(Recipe));
 app.post('/tabler', routes.tabler(Recipe));
 app.post('/commit', routes.commit(Recipe));
+app.post('/create', routes.create(Recipe));
 
 app.post('/download', routes.downloadRecipe(Recipe));
 
