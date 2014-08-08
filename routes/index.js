@@ -34,6 +34,8 @@ exports.hierarchy = function(recipeModel) {
         recipeModel.find({}, function(e, recipes) {
             var reqID = req.body['recipename']+'-'+req.body['recipevers'].split('.').join('_');
             var identifierTree = helpers.getIdentifierTree(recipes, reqID);
+            req.session.recTree = identifierTree;
+            console.log(req.session);
             res.send(identifierTree);
         });
     };
@@ -48,10 +50,35 @@ exports.tabler = function(recipeModel) {
     };
 };
 
+exports.save = function(req, res) {
+    console.log(req.body);
+    console.log(req.session);
+    res.send('Tester Works');
+}
+
+// UNIFY COMMIT AND CREATE 
+/*
+exports.createRecipe = function(recipeModel) {
+    return function(req, res) {
+        console.log(req.body);
+        if (req.body['newname'] != '') {
+            var newRecipe = {'recipeIdentifier': req.body['newname']+'-0_0_0'};
+            newRecipe['recipeOptions'] = {'testOption': 'defaultVal', 'testOption2': 'defaultVal'};
+            newRecipe['recipeChildren'] = []; 
+            recipeModel.find({}, function(e, recipes) {
+            });
+            var createdRecipe = new recipeModel(newRecipe);
+            createdRecipe.save();
+        }
+        res.redirect('/');
+    };
+};
+*/
+
+// UNIFY COMMIT AND CREATE
 exports.commit = function(recipeModel) {
     return function(req, res) {  
         recipeModel.find({}, function(e, recipes) {
-            console.log(req.body);
             var nextVersion = helpers.getLastVersion(recipes, req.body['newRecipe']['recipeIdentifier']);
             var newRecipes = [{'recipeIdentifier': nextVersion, 'recipeOptions': req.body['newRecipe']['recipeOptions']}];
             newRecipes[0]['recipeChildren'] = helpers.getChildrenList(recipes, req.body['derivedIdentifier']);
@@ -64,54 +91,7 @@ exports.commit = function(recipeModel) {
     };
 };
 
-exports.create = function(recipeModel) {
-    return function(req, res) {
-        console.log(req.body);
-        /*
-        recipeModel.find(function(e, recipes) {
-            var recNames = helpers.getDocNames(recipes);
-            res.render('create', {'title': 'Create New Recipe', 'recNames': recNames});
-        });
-        */
-        res.send('Success!');
-    };
-};
 
-exports.createRecipe = function(recipeModel) {
-    return function(req, res) {
-        if (req.body['recname'] != '') {
-            var newRecipe = {'recipeIdentifier': req.body['recname']+'-0_0_0'};
-
-            if (req.body['optionLab'] != '') {
-                newRecipe['recipeOptions'] = {};
-                if (req.body['optionLab'] instanceof Array) {
-                    for (var i = 0; i < req.body['optionLab'].length; i++) {
-                        newRecipe['recipeOptions'][req.body['optionLab'][i]] = req.body['optionVal'][i];
-                    }
-                } else {
-                    newRecipe['recipeOptions'][req.body['optionLab']] = req.body['optionVal'];
-                }
-            }
-
-            if (req.body.hasOwnProperty('childname')) {
-                if (req.body['childname'] instanceof Array) {
-                    var childidentifiers = [];
-                    for (var i = 0; i < req.body['childname'].length; i++) {
-                        childidentifiers.push(req.body['childname'][i]+'-'+req.body['childversion'][i].split('.').join('_'));
-                    }
-                    newRecipe['recipeChildren'] = childidentifiers;
-                } else {
-                    newRecipe['recipeChildren'] = [req.body['childname']+'-'+req.body['childversion'].split('.').join('_')]; 
-                } 
-            } else { 
-                newRecipe['recipeChildren'] = []; 
-            } 
-            var createdRecipe = new recipeModel(newRecipe);
-            createdRecipe.save();
-        }
-        res.redirect('/');
-    };
-};
 
 exports.downloadRecipe = function(recipeModel) {
     return function(req, res) {

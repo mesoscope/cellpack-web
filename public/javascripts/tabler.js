@@ -22,9 +22,9 @@ $.post('/tabler', {'recipename': recipeName, 'recipevers': recipeVersion}, funct
     
     
     $('#recipeForm').append(recTable);
-    $('#recipeForm').append('<button id="submitter" type="button"> Update </button><br><br>');
+    $('#recipeForm').append('<button id="recipeSaver"> Save </button>');
     
-    $('#submitter').click(function() {
+    $('#committer').click(function() {
         var recName = $('#recTableHeader').children().html();
         var recVersion = 'UNDEFINED';
         var recOptions = {};
@@ -59,7 +59,7 @@ $.post('/tabler', {'recipename': recipeName, 'recipevers': recipeVersion}, funct
                 topLevel = $(this).html()+'-'+$(this).data('vers').split('.').join('_');
             }
         });
-     
+
         if (edited) {
             var newIdentifier = recName + '-' + recVersion.split('.').join('_');
             var newRecipe = {'recipeIdentifier': newIdentifier, 'recipeOptions': recOptions};

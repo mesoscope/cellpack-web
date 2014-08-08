@@ -7,22 +7,24 @@ block subhead
 
 block content
     div(id="interface", align="middle")
-        h2 Create version of recipe &nbsp
+        h2 Create new version of recipe &nbsp
             select(name='recname', class='recn')
                 each rn, index in recNames
                     option(value=rn)= rn
             select(name='recversion', class="recv")
             button(id="loader", type="button") Load
-        h2 Create recipe from scratch &nbsp
-            button(id="childer", type="button") Create
     br
     br
-    div(id="editInterface" style="height:400px")
-        div(id="recipeTree", style="float:left")
-            div(id="recipeHierarchy")
+    div(id="editInterface" style="height:150px")
+        div(id="recipeTree", style="float:left;width:39%;height:100%")
+            div(id="recipeHierarchy", style="overflow:scroll")
             div(id="hierarchyControl", align="middle")
                 button(id="createChild", type="button") Add Child
-        div(id="tableInterface", style="float:right")
+        div(id="tableInterface", style="width:60%;float:right;height:100%")
             div(id="recTableHeader", align="middle")
-            div(id="recipeTable", align="middle")
+            div(id="recipeTable", align="middle", style="overflow:scroll")
                 form(id="recipeForm")
+    br
+    br
+    div(id="submitButton", align="middle")
+        button(id="committer", type="button") Commit All Changes

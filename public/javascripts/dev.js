@@ -1,5 +1,7 @@
 $(document).ready(function() {
     $('#createChild').hide();
+    $('#saver').hide();
+    $('#committer').hide();
     $('#loader').click(function() {
         window.recipeName = $('select.recn').val();
         window.recipeVersion = $('select.recv').val();
@@ -22,10 +24,11 @@ $(document).ready(function() {
             }
 
             makeHierarchy(data);
-            alert(hs);
             $('#recipeHierarchy').append(hs+'<br><br>');
-            $('.sideLink').first().css('background-color', 'blue');
+            $('.sideLink').first().css('background-color', 'yellow');
             $('#createChild').show();
+            $('#saver').show();
+            $('#committer').show();
         });
         $.getScript('javascripts/tabler.js');
         $.getScript('javascripts/linker.js');
@@ -35,15 +38,11 @@ $(document).ready(function() {
         var newName = prompt("Please enter the new recipe name!");
 
         var selected = $('.sideLink').filter(function() {
-            return $(this).css('background-color') == 'rgb(0, 0, 255)';
+            return $(this).css('background-color') == 'rgb(255, 255, 0)';
         });
 
-        $.post('/create', {'recipename': selected.html(), 'recipevers': selected.data('vers'), 'topLevel': $('.sideLink').first().html()}, function(data) {
+        $.post('/save', {'newname': newName, 'parentname': selected.html(), 'parentvers': selected.data('vers')}, function(data) {
             alert(data);
         });
-    });
-
-    $('#childer').click(function() {
-        alert('Childer Pressed');
     });
 });

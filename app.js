@@ -13,7 +13,14 @@ var recipeSchema = mongoose.Schema({
 }, {collection: 'recipes'});
 var Recipe = mongoose.model('Recipe', recipeSchema);
 
+var session = require('express-session');
+
+
+
 var app = express();
+
+// Session
+app.use(session({secret: '1234567890QWERTY'}));
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -24,6 +31,7 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(__dirname + '/public'));
+
 
 // development only
 if ('development' == app.get('env')) {
@@ -36,8 +44,8 @@ app.post('/versioner', routes.versioner(Recipe));
 app.get('/dev', routes.dev(Recipe));
 app.post('/hierarchy', routes.hierarchy(Recipe));
 app.post('/tabler', routes.tabler(Recipe));
+app.post('/save', routes.save);
 app.post('/commit', routes.commit(Recipe));
-app.post('/create', routes.create(Recipe));
 
 app.post('/download', routes.downloadRecipe(Recipe));
 
