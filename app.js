@@ -1,8 +1,15 @@
+// load express
 var express = require('express');
+// load routes
+// what does this do?
 var routes = require('./routes');
+// load http module
 var http = require('http');
+// load path
+// what does this do?
 var path = require('path');
 
+// load mongoose
 var mongoose = require('mongoose');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/cellpack';
 mongoose.connect(mongoUri);
