@@ -1,20 +1,9 @@
+var db = require('./mongoose');
+
 var express = require('express');
 var routes = require('./routes');
 var http = require('http');
 var path = require('path');
-
-// load mongoose and connect to cellpack database
-var mongoose = require('mongoose');
-var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/cellpack';
-mongoose.connect(mongoUri);
-
-// recipe schema
-var recipeSchema = mongoose.Schema({
-    recipeIdentifier: String,
-    recipeOptions: mongoose.Schema.Types.Mixed,
-    recipeChildren: []
-}, {collection: 'recipes'});
-var Recipe = mongoose.model('Recipe', recipeSchema);
 
 
 // instantiates the application
@@ -35,16 +24,26 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
+
+
+
+// DROP RECIPE REFERENCES
+
 app.get('/', routes.index(Recipe));
-app.post('/versioner', routes.versioner(Recipe));
+//app.get('/', routes.index)
 
-app.get('/dev', routes.dev(Recipe));
-app.post('/hierarchy', routes.hierarchy(Recipe));
-app.post('/tabler', routes.tabler(Recipe));
-app.post('/save', routes.save);
-app.post('/commit', routes.commit(Recipe));
+//app.post('/versioner', routes.versioner(Recipe));
 
-app.post('/download', routes.downloadRecipe(Recipe));
+
+//app.get('/dev', routes.dev(Recipe));
+
+
+//app.post('/hierarchy', routes.hierarchy(Recipe));
+//app.post('/tabler', routes.tabler(Recipe));
+//app.post('/save', routes.save);
+//app.post('/commit', routes.commit(Recipe));
+
+//app.post('/download', routes.downloadRecipe(Recipe));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

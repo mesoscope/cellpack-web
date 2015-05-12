@@ -1,4 +1,3 @@
-var helpers = require('utils');
 var undersc = require('underscore');
 var fs = require('fs');
 
