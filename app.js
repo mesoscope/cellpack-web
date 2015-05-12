@@ -1,18 +1,14 @@
-// load express
 var express = require('express');
-// load routes
-// what does this do?
 var routes = require('./routes');
-// load http module
 var http = require('http');
-// load path
-// what does this do?
 var path = require('path');
 
-// load mongoose
+// load mongoose and connect to cellpack database
 var mongoose = require('mongoose');
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/cellpack';
 mongoose.connect(mongoUri);
+
+// recipe schema
 var recipeSchema = mongoose.Schema({
     recipeIdentifier: String,
     recipeOptions: mongoose.Schema.Types.Mixed,
@@ -20,14 +16,9 @@ var recipeSchema = mongoose.Schema({
 }, {collection: 'recipes'});
 var Recipe = mongoose.model('Recipe', recipeSchema);
 
-var session = require('express-session');
 
-
-
+// instantiates the application
 var app = express();
-
-// Session
-app.use(session({secret: '1234567890QWERTY'}));
 
 app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
@@ -38,7 +29,6 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(app.router);
 app.use(express.static(__dirname + '/public'));
-
 
 // development only
 if ('development' == app.get('env')) {
