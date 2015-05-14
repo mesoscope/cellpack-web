@@ -1,8 +1,8 @@
 $(document).ready(function() {
-    var recn = $('select.recn');
-    var recv = $('select.recv');
+    var recn = $('select.nameselect');
+    var recv = $('select.versionselect');
     recn.change(function() {
-        $.post('/versioner', {'recipename': recn.val()}, function(data) {
+        $.post('/version', {'recipename': recn.val()}, function(data) {
             recv.empty().append(function() {
                 var output = '';
                 $.each(data, function(versIndex) {
