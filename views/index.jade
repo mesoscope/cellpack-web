@@ -1,15 +1,14 @@
 extends layout
 
 block subhead
-    script(src="javascripts/jquery-2.1.1.js")
     script(src="javascripts/version.js")
 
 block content
     div(id="versioncontain", style="height:75px", align="middle")
         h2 Download autoPACK Recipe &nbsp
             form(method='post', action='/download')
-                select(class='nameselect')
+                select(name='recname', class='nameselect')
                     each rn, index in recNames
                         option(value=rn)= rn
-                select(class='versionselect')
+                select(name='recversion', class='versionselect')
                 button(type="submit") Download

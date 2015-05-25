@@ -1,28 +1,18 @@
 doctype html
 html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-    block subhead
+    head
+        title= title
+        link(rel='stylesheet', href='stylesheets/style.css')
+        script(src="javascripts/jquery-2.1.1.js")
+        block subhead
+    body
+        div(id="sitecontainer", style="width:900px, height:1000px")
+            div(id="banner", style="height:125px", align="right")
+                img(src="images/autopack.png")
 
-  body
-    div(id="container", style="width:900px, height:1000px")
-
-      div(id="banner", style="height:125px", align="right")
-        img(src="images/autopack.png")
-
-      div(id="menu", style="height:50px", align="middle")
-        h2 Interface &nbsp
-          select
-            option Beginner
-            option Intermediate
-            option Advanced
-            option Debug
-
-      div(id="links", style="height:50px")
-        div(style="float:left", align="center")
-          a(href="/") Recipe Download
-        div(style="float:right", align="center")
-          a(href="/dev") Recipe Development
-      
-      block content
+        div(id="tabs", style="height:50px")
+            div(style="float:left", align="center")
+                a(href="/") Download Recipe
+            div(style="float:right", align="center")
+                a(href="/create") Create Recipe
+        block content

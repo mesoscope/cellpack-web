@@ -1,0 +1,19 @@
+extends layout
+
+block subhead
+    script(src="javascripts/create.js")
+
+block content
+    div(align="middle")
+        div
+            h2 Create New Recipe
+        div(id="createinterface" style="height:150px")
+            div(id="recipetree", style="float:left;width:39%;height:100%;overflow:scroll")
+
+            div(id="edittable", style="float:right;width:60%;height:100%")
+                div(id="recipetable", align="middle;overflow:scroll")
+                div(id="tablecontrol")
+                    button(id="individualsave", type="button") Save Individual Recipe
+        br
+        div(id="submitButton", align="middle")
+            button(id="committer", type="button") Save Complete Recipe

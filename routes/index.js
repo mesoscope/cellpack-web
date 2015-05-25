@@ -20,10 +20,12 @@ module.exports = function(app) {
 	})
     });
 
-    /*
-    app.post('/download', function (req, res) {
-    });
-    */
 
-    //require('./dev')(app);
+    app.post('/download', function (req, res) {
+	console.log(req.body);
+	//res.attachment({ some: 'json' });
+	res.redirect('/');
+    });
+
+    require('./create')(app);
 }
