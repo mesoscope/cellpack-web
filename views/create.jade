@@ -1,7 +1,9 @@
 extends layout
 
 block subhead
-    script(src="javascripts/create.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js", type="text/javascript")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.0/backbone-min.js", type="text/javascript")
+    script(src="javascripts/create.js", type="text/javascript")
 
 block content
     div(align="middle")
@@ -9,7 +11,7 @@ block content
             h2 Create New Recipe
         div(id="createinterface" style="height:150px")
             div(id="recipetree", style="float:left;width:39%;height:100%;overflow:scroll")
-
+                | Loading...
             div(id="edittable", style="float:right;width:60%;height:100%")
                 div(id="recipetable", align="middle;overflow:scroll")
                 div(id="tablecontrol")

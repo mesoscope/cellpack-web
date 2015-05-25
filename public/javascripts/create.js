@@ -1,11 +1,12 @@
-var recTree = [];
+var TreeView = Backbone.View.extend({
+    el: 'recipetree',
+    initialize: function() {
+	this.render();
+    },
+    render: function() {
+	this.$el.html("Hello World!");
+    }
+});
 
-alert("hey");
+var treeView = new TreeView();
 
-console.log(recTree);
-
-/*
-$(document).ready(function() {
-    
-})
-*/
