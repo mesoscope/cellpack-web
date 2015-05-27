@@ -6,13 +6,14 @@ html
         script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", type="text/javascript")
         block subhead
     body
-        div(id="sitecontainer", style="width:900px, height:1000px")
-            div(id="banner", style="height:125px", align="right")
+        div(id="siteContainer", style="width:900px, height:1000px")
+            div(id="bannerContainer", style="height:125px", align="right")
                 img(src="images/autopack.png")
 
-        div(id="tabs", style="height:50px")
-            div(style="float:left", align="center")
-                a(href="/") Download Recipe
-            div(style="float:right", align="center")
-                a(href="/create") Create Recipe
-        block content
+            div(id="tabContainer", style="height:50px")
+                div(style="float:left", align="center")
+                    a(href="/") Download Recipe
+                div(style="float:right", align="center")
+                    a(href="/create") Create Recipe
+
+            block content

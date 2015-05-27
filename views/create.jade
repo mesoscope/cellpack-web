@@ -7,16 +7,18 @@ block subhead
     script(src="javascripts/create.js", type="text/javascript")
 
 block content
-    div(align="middle")
-        div
+    div(id="createContainer", align="middle")
+        div(id="createHeader")
             h2 Create New Recipe
-        div(id="createinterface" style="height:150px")
-            div(id="recipetree", style="float:left;width:39%;height:100%;overflow:scroll")
-                | Loading...
-            div(id="edittable", style="float:right;width:60%;height:100%")
-                div(id="recipetable", align="middle;overflow:scroll")
-                div(id="tablecontrol")
+
+        div(id="interfaceContainer" style="height:150px")
+            div(id="treeContainer", style="float:left;width:39%;height:100%;overflow:scroll")
+                | Loading Tree...
+            div(id="recipeInterfaceContainer", style="float:right;width:60%;height:100%")
+                div(id="recipeContainer", align="middle;overflow:scroll")
+                    | Loading Recipe...
+                div(id="recipeControlContainer")
                     button(id="individualsave", type="button") Save Individual Recipe
         br
-        div(id="submitButton", align="middle")
-            button(id="committer", type="button") Save Complete Recipe
+        div(id="controlContainer", align="middle")
+            button(id="committer", type="button") Save Complete Tree
