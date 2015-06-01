@@ -9,7 +9,7 @@ block subhead
         | Version <%= version %> <br>
         | Option <input type="text" placeholder="<%= option %>">
     script(id="treeComponent", type="text/template")
-        | <%= name %>
+        | <%= name %> <button type="button" class="child"> Child </button> <button type="button"> Delete </button>
     script(src="javascripts/create-marionette.js", type="text/javascript")
     
 block content

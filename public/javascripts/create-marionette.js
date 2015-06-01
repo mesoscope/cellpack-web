@@ -29,12 +29,25 @@ $(document).ready(function() {
 
     CreateRecipe.RecipeItemView = Marionette.ItemView.extend({
 	tagName: "li",
-	template: "#treeComponent"
+	template: "#treeComponent",
+	events: {
+	    "click .names": "switchFocus",
+	    "click .child": "addChild"
+	},
+	switchFocus: function(e) {
+	    console.log(e.currentTarget);
+	},
+	addChild: function(e) {
+	    console.log(this.collection);
+	}
     });
 
     CreateRecipe.TreeView = Marionette.CollectionView.extend({
 	tagname: "ul",
-	childView: CreateRecipe.RecipeItemView
+	childView: CreateRecipe.RecipeItemView,
+	itemViewOptions: {
+	    collection: this.collection
+	}
     });
 
     CreateRecipe.on("before:start", function() {
