@@ -14,8 +14,15 @@ $(document).ready(function() {
 
 	defaults: {
 	    name: "New Recipe",
+	    version: 0,
 	    option: 1,
 	    current: true
+	},
+	
+	toJSON: function() {
+	    var json = Backbone.Model.prototype.toJSON.apply(this, arguments);
+	    json.cid = this.cid;
+	    return json
 	}
     });
 
@@ -37,10 +44,22 @@ $(document).ready(function() {
 	    "click .nameButton": "changeSelected"
 	},
 	changeSelected: function(e) {
-	    console.log(e.currentTarget().html());
+	    $("button").filter(function() {
+		return $(this).css("background-color") == "rgb(255, 255, 0)";
+	    }).css("background-color", "white");
+
+	    $(e.currentTarget).css("background-color", "yellow");
+	    // find the model in the tree
+	    // create new view with model
+	    //var newView = new CreateRecipe.FocusView();
+	    //CreateRecipe.regions.focus.show(newView);
 	},
 	modelEvents: {
-	    "change": "render"
+	    "change": "myRender"
+	},
+	myRender: function() {
+	    console.log(this.collection);
+	    render();
 	}
     });
 
@@ -86,12 +105,15 @@ $(document).ready(function() {
     
     // INITIALIZATION
     CreateRecipe.on("start", function() {
+	// example children
 	var initialRecipe = new CreateRecipe.Recipe();
 
 	var topView = new CreateRecipe.RecipeView({model: initialRecipe});
 	CreateRecipe.regions.tree.show(topView);
 
-	// make this a pointer??
+	var focusSelector = "button:contains('"+initialRecipe.get("name")+"')";
+	$(focusSelector).css("background-color", "yellow");
+
 	var focusView = new CreateRecipe.FocusView({model: initialRecipe});
 	CreateRecipe.regions.focus.show(focusView);
     });
