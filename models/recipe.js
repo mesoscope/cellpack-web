@@ -12,9 +12,10 @@ var recipeSchema = mongoose.Schema({
 
 exports.recipeModel = mongoose.model('Recipe', recipeSchema);
 
+
+// FIX THESE
 // convert these to functional paradigm
 // use map, filter, etc.
-
 function getRecipeNames(recipes) {
     // accepts array of recipes
     var recNames = [];
