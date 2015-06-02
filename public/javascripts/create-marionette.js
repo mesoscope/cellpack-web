@@ -8,8 +8,11 @@ $(document).ready(function() {
 	// define url for REST operations
 
 	initialize: function() {
-	    var children = new CreateRecipe.RecipeChildren([]);
-	    this.set("children", children);
+	    var children = this.get("children");
+	    if (!children) {
+		var emptyChildren = new CreateRecipe.RecipeChildren([]);
+		this.set("children", emptyChildren);
+	    }
 	},
 
 	defaults: {
@@ -36,6 +39,7 @@ $(document).ready(function() {
     CreateRecipe.RecipeView = Marionette.CompositeView.extend({
 	// model template
 	template: "#recipeTemplate",
+	tagName: "ul",
 	childView: CreateRecipe.ChildView,
 	initialize: function() {
 	    this.collection = this.model.get("children");
@@ -49,7 +53,7 @@ $(document).ready(function() {
 	    }).css("background-color", "white");
 
 	    $(e.currentTarget).css("background-color", "yellow");
-	    // find the model in the tree
+	    // find the model in the tree using cid
 	    // create new view with model
 	    //var newView = new CreateRecipe.FocusView();
 	    //CreateRecipe.regions.focus.show(newView);
@@ -58,15 +62,16 @@ $(document).ready(function() {
 	    "change": "myRender"
 	},
 	myRender: function() {
-	    console.log(this.collection);
+	    // testing
+	    //console.log(this.collection);
 	    render();
 	}
     });
 
     // RECIPE CHILD VIEW
     CreateRecipe.ChildView = Marionette.ItemView.extend({
-	template: "#recipeTemplate",
-	tagName: "ul"
+	//template: "#recipeTemplate",
+	//tagName: "ul"
     });
 
     // FOCUS VIEW
@@ -105,8 +110,18 @@ $(document).ready(function() {
     
     // INITIALIZATION
     CreateRecipe.on("start", function() {
+
 	// example children
-	var initialRecipe = new CreateRecipe.Recipe();
+	var child11 = new CreateRecipe.Recipe({name: "Child11"});
+	var child1Collection = new CreateRecipe.RecipeChildren([child11]);
+	var child1 = new CreateRecipe.Recipe({name: "Child1", children: child1Collection});
+	var child2 = new CreateRecipe.Recipe({name: "Child2"});
+	var child3 = new CreateRecipe.Recipe({name: "Child3"});
+	var childCollection = new CreateRecipe.RecipeChildren([child1, child2, child3]);
+
+	var initialRecipe = new CreateRecipe.Recipe({name: "Top", children: childCollection});
+
+
 
 	var topView = new CreateRecipe.RecipeView({model: initialRecipe});
 	CreateRecipe.regions.tree.show(topView);
