@@ -18,7 +18,7 @@ $(document).ready(function() {
 	defaults: {
 	    name: "New Recipe",
 	    version: 0,
-	    option: 1,
+	    option: "1",
 	    current: true
 	},
 	
@@ -26,6 +26,13 @@ $(document).ready(function() {
 	    var json = Backbone.Model.prototype.toJSON.apply(this, arguments);
 	    json.cid = this.cid;
 	    return json
+	},
+	
+	findModelbyCID: function(clientid) {
+	    // why the hell does this work?
+	    if (this.cid == clientid) {
+		return this;
+	    }
 	}
     });
 
@@ -40,7 +47,6 @@ $(document).ready(function() {
 	// model template
 	template: "#recipeTemplate",
 	tagName: "ul",
-	childView: CreateRecipe.ChildView,
 	initialize: function() {
 	    this.collection = this.model.get("children");
 	},
@@ -48,30 +54,23 @@ $(document).ready(function() {
 	    "click .nameButton": "changeSelected"
 	},
 	changeSelected: function(e) {
+	    e.stopPropagation();
+
+	    // remove yellow selection
 	    $("button").filter(function() {
-		return $(this).css("background-color") == "rgb(255, 255, 0)";
+		return $(this).css("background-color") == "rgb(255, 255, 0)"
 	    }).css("background-color", "white");
 
 	    $(e.currentTarget).css("background-color", "yellow");
-	    // find the model in the tree using cid
+	    
 	    // create new view with model
-	    //var newView = new CreateRecipe.FocusView();
-	    //CreateRecipe.regions.focus.show(newView);
+	    var newFocusRecipe = this.model.findModelbyCID($(e.currentTarget).attr("data-id"));
+	    var newView = new CreateRecipe.FocusView({model: newFocusRecipe});
+	    CreateRecipe.regions.focus.show(newView);
 	},
 	modelEvents: {
-	    "change": "myRender"
-	},
-	myRender: function() {
-	    // testing
-	    //console.log(this.collection);
-	    render();
+	    "change": "render"
 	}
-    });
-
-    // RECIPE CHILD VIEW
-    CreateRecipe.ChildView = Marionette.ItemView.extend({
-	//template: "#recipeTemplate",
-	//tagName: "ul"
     });
 
     // FOCUS VIEW
@@ -85,13 +84,24 @@ $(document).ready(function() {
 	addChild: function() {
 	    var newRecipe = new CreateRecipe.Recipe();
 	    this.model.get("children").add(newRecipe);
+	    $("button").filter(function() {
+		return $(this).css("background-color") == "rgb(255, 255, 0)"
+	    }).css("background-color", "white");
+	    $("button[data-id=\""+newRecipe.cid+"\"]").css("background-color", "yellow");
+
+	    var newView = new CreateRecipe.FocusView({model: newRecipe});
+	    CreateRecipe.regions.focus.show(newView);
 	},
 	alertDelete: function() {
+	    // figure out how to delete
 	    alert("delete clicked");
 	},
 	saveRec: function() {
 	    var newName = $("#rec-name").val();
 	    this.model.set("name", newName);
+	    var newOption = $("#rec-option").val();
+	    this.model.set("option", newOption);
+	    $("button[data-id=\""+this.model.cid+"\"]").css("background-color", "yellow");
 	}
     });
 
@@ -120,9 +130,6 @@ $(document).ready(function() {
 	var childCollection = new CreateRecipe.RecipeChildren([child1, child2, child3]);
 
 	var initialRecipe = new CreateRecipe.Recipe({name: "Top", children: childCollection});
-
-
-
 	var topView = new CreateRecipe.RecipeView({model: initialRecipe});
 	CreateRecipe.regions.tree.show(topView);
 

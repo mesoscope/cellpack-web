@@ -7,9 +7,9 @@ block subhead
     script(id="recipeTemplate", type="text/template")
         | <li><button class="nameButton" type="button" data-id="<%= cid %>"><%= name %></button></li>
     script(id="focusTemplate", type="text/template")
-        | <input type="text" id="rec-name" value="" placeholder="<%= name %>">
+        | <input type="text" id="rec-name" value="<%= name %>" placeholder="<%= name %>">
         | <br>
-        | Option <input type="text" placeholder="<%= option %>">
+        | Option <input type="text" id="rec-option" value="<%= option %>" placeholder="<%= option %>">
         | <br>
         | <button id="child" type="button"> Create Child </button>
         | <button id="delete" type="button"> Delete Recipe </button>
@@ -22,7 +22,7 @@ block content
         div(id="createHeader")
             h2 Create New Recipe
 
-        div(id="interfaceContainer" style="height:150px")
+        div(id="interfaceContainer" style="height:300px")
             div(id="treeContainer", style="float:left;width:39%;height:100%;overflow:scroll")
                 | Loading Tree...
             div(id="recipeInterfaceContainer", style="float:right;width:60%;height:100%")
