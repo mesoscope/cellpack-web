@@ -65,7 +65,8 @@ $(document).ready(function() {
 	    
 	    // create new view with model
 	    var newFocusRecipe = this.model.findModelbyCID($(e.currentTarget).attr("data-id"));
-	    var newView = new CreateRecipe.FocusView({model: newFocusRecipe});
+	    var focusTop = CreateRecipe.regions.focus.currentView.getOption("topRec");
+	    var newView = new CreateRecipe.FocusView({model: newFocusRecipe, topRec: focusTop});
 	    CreateRecipe.regions.focus.show(newView);
 	},
 	modelEvents: {
@@ -75,10 +76,13 @@ $(document).ready(function() {
 
     // FOCUS VIEW
     CreateRecipe.FocusView = Marionette.ItemView.extend({
+	initialize: function(options) {
+	    this.topRec = options.topRec;
+	},
 	template: "#focusTemplate",
 	events: {
 	    "click #child": "addChild",
-	    "click #delete": "alertDelete",
+	    "click #delete": "deleteRec",
 	    "click #save": "saveRec"
 	},
 	addChild: function() {
@@ -88,13 +92,14 @@ $(document).ready(function() {
 		return $(this).css("background-color") == "rgb(255, 255, 0)"
 	    }).css("background-color", "white");
 	    $("button[data-id=\""+newRecipe.cid+"\"]").css("background-color", "yellow");
-
-	    var newView = new CreateRecipe.FocusView({model: newRecipe});
+	    var newView = new CreateRecipe.FocusView({model: newRecipe, topRec: this.topRec});
 	    CreateRecipe.regions.focus.show(newView);
 	},
-	alertDelete: function() {
-	    // figure out how to delete
-	    alert("delete clicked");
+	deleteRec: function() {
+	    this.model.destroy();
+	    $("button[data-id=\""+this.topRec.cid+"\"]").css("background-color", "yellow");
+	    var newView = new CreateRecipe.FocusView({model: this.topRec, topRec: this.topRec});
+	    CreateRecipe.regions.focus.show(newView);
 	},
 	saveRec: function() {
 	    var newName = $("#rec-name").val();
@@ -136,7 +141,7 @@ $(document).ready(function() {
 	var focusSelector = "button:contains('"+initialRecipe.get("name")+"')";
 	$(focusSelector).css("background-color", "yellow");
 
-	var focusView = new CreateRecipe.FocusView({model: initialRecipe});
+	var focusView = new CreateRecipe.FocusView({model: initialRecipe, topRec: initialRecipe});
 	CreateRecipe.regions.focus.show(focusView);
     });
 
