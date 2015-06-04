@@ -1,3 +1,5 @@
+// ELIMINATE THIS
+// move models access to relevant /models files
 var models = require('../models');
 
 module.exports = function(app) {

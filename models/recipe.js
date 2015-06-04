@@ -33,21 +33,41 @@ function getRecipeVersions(recipes, recipeName) {
 }
 exports.getRecipeVersions = getRecipeVersions;
 
-// function to convert from json object to new recipe for saving
-// function to extract recipe from nested recipe
 function flattenRecipe(r) {
     var innerFlatten = function(rec, result) {
 	var newName = rec["name"];
 	var newVersion = rec["version"];
 	var newOption = rec["option"];
-	// this contains actual children
-	var newChildren = rec["children"];
+	
+
+	var childArray = [];
+	for (var d = 0; d < rec["children"].length; d++) {
+	    var childId = "";
+	    if (rec["children"][d]["id"])
+		childId = rec["children"][d]["id"];
+	    else
+		childId = rec["children"][d]["cid"];
+	    childArray.push(childId);
+	}
+
 	var newCurrent = rec["current"];
-	var newRec = {name: newName, version: newVersion, option: newOption, children: newChildren, current: newCurrent};
+
+	// make sure backbone models
+	// loaded from server
+	// set id attribute
+	// and this hooks into it
+	var tempId = "";
+	if (rec["id"])
+	    tempId = rec["id"];
+	else
+	    tempId = rec["cid"];
+	    
+
+	var newRec = {name: newName, version: newVersion, option: newOption, children: childArray, current: newCurrent, tid: tempId};
 	result.push(newRec);
-	if (newChildren) {
-	    for (var c = 0; c < newChildren.length; c++) {
-		innerFlatten(newChildren[c], result);
+	if (rec["children"].length > 0) {
+	    for (var c = 0; c < rec["children"].length; c++) {
+		innerFlatten(rec["children"][c], result);
 	    }
 	}
 	return result;
@@ -56,57 +76,53 @@ function flattenRecipe(r) {
 }
 
 function insertRecipes(recArray) {
-    while (recArray) {
+    while (recArray.length > 0) {
 	for (var r = (recArray.length - 1); r >= 0; r--) {
-	    if (!recArray[r]["children"] && notPresent(recArray[r])) {
-		var newRec = new RecipeModel(recArray[r]);
-		newRec.save(function(err) {
-		    console.log(err);
-		});
-		recArray.splice(r, 1);		
-	    } else if (notPresent(recArray[r])) {
-		var allChildIds = allChildrenPresent(recArray[r]["children"]);
-		if (allChildIds) {
-		    var intermediateRec = recArray[r];
-		    intermediateRec["children"] = allChildIds;
-		    var newRec = new RecipeModel(intermediateRec);
+	    // not present in database
+	    if (recArray[r]["tid"].length < 4) {
+		if (recArray[r]["children"].length < 1) {
+		    var baseRec = recArray.splice(r, 1)[0];
+		    var newRec = new RecipeModel(baseRec);
 		    newRec.save(function(err) {
 			console.log(err);
 		    });
-		    recArray.splice(r, 1);
+
+		    // update rest of tree with id
+		    for (var c = 0; c < recArray.length; c++) {
+			var pidIndex = recArray[c]["children"].indexOf(baseRec["tid"]);
+			if (pidIndex > -1)
+			    recArray[c]["children"][pidIndex] = newRec._id;
+		    }
+		} 
+		else {
+		    var childrenInDB = true;
+		    for (var k = 0; k < recArray[r]["children"]; k++) {
+			if (recArray[r]["children"][k].length < 4)
+			    childrenInDB = false;
+		    }
+		    if (childrenInDB) {
+			var baseRec = recArray.splice(r, 1)[0];
+			var newRec = new RecipeModel(baseRec);
+			newRec.save(function(err) {
+			    console.log(err);
+			});
+			// update rest of tree with id
+			for (var w = 0; w < recArray.length; w++) {
+			    var pidIndex = recArray[w]["children"].indexOf(baseRec["tid"]);
+			    if (pidIndex > -1)
+				recArray[w]["children"][pidIndex] = newRec._id;
+			}
+		    }
 		}
 	    }
 	}
     }
 }
 
-function notPresent(rec) {
-    var recName = rec["name"];
-    var recVersion = rec["version"];
-    RecipeModel.find({'name': recName, "version": recVersion}, function(err, recipes) {
-	if (recipes)
-	    return false;
-	else
-	    return true;
-    });
-}
-
-function allChildrenPresent(rec) {
-    var queryArray = [];
-    for (var c = 0; c < rec["children"].length; c++) {
-	queryArray.push({"name": rec["children"][c]["name"], "version": rec["children"][c]["version"]});
-    }
-    RecipeModel.find({$or: queryArray}, function(err, recipes) {
-	if (recipes.length == rec["children"].length) {
-	    return recipes.map(function(r) {return r._id.str});
-	}
-	else
-	    return [];
-    });
-}
 
 function handleRecipes(r) {
-    insertRecipes(flattenRecipe(r));
-    //return flattenRecipe(r);
+    var flattened = flattenRecipe(r);
+    //console.log(flattened);
+    insertRecipes(flattened);
 }
 exports.handleRecipes = handleRecipes;
