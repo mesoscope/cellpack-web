@@ -10,7 +10,7 @@ module.exports = function(app) {
 	});
     });
 
-
+    // incorporate with /recipe api
     app.post('/version', function(req, res) {
 	var recName = req.body['recipename'];
 	// adjust query to get versions directly
@@ -20,11 +20,19 @@ module.exports = function(app) {
 	})
     });
 
-
+    // incorporate with /recipe api
+    /*
     app.post('/download', function (req, res) {
 	console.log(req.body);
 	//res.attachment({ some: 'json' });
 	res.redirect('/');
+    });
+    */
+
+    app.post('/recipe', function(req, res) {
+	var jsonRec = JSON.parse(req.body["recipe"]);
+	models.handleRecipes(jsonRec);
+	res.send('success');
     });
 
     require('./create')(app);

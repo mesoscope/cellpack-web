@@ -1,3 +1,4 @@
+// unnecessary for now
 var models = require('../../models');
 
 module.exports = function(app) {

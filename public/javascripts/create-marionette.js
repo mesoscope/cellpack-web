@@ -18,7 +18,7 @@ $(document).ready(function() {
 	defaults: {
 	    name: "New Recipe",
 	    version: 0,
-	    option: "1",
+	    option: "testValue",
 	    current: true
 	},
 	
@@ -103,10 +103,28 @@ $(document).ready(function() {
 	},
 	saveRec: function() {
 	    var newName = $("#rec-name").val();
-	    this.model.set("name", newName);
+	    if (newName)
+		this.model.set("name", newName);
 	    var newOption = $("#rec-option").val();
-	    this.model.set("option", newOption);
+	    if (newOption)
+		this.model.set("option", newOption);
 	    $("button[data-id=\""+this.model.cid+"\"]").css("background-color", "yellow");
+	}
+    });
+
+    CreateRecipe.CommitView = Marionette.ItemView.extend({
+	template: "#controlTemplate",
+	events: {
+	    "click #committer": "sendRecipe"
+	},
+	sendRecipe: function() {
+	    var jsonModel = JSON.stringify(this.model.toJSON());
+	    $.post("/recipe", {recipe: jsonModel}, function(d) {
+		if (d == "success")
+		    alert("Saved Successfully");
+	    });
+	    //redirect?
+	    //window.location.replace("/");
 	}
     });
 
@@ -116,7 +134,8 @@ $(document).ready(function() {
 	    el: "#interfaceContainer",
 	    regions: {
 		tree: "#treeContainer",
-		focus: "#focusContainer"
+		focus: "#focusContainer",
+		control: "#controlContainer"
 	    }
 	});
 	CreateRecipe.regions = new RecipeContainer();
@@ -126,15 +145,7 @@ $(document).ready(function() {
     // INITIALIZATION
     CreateRecipe.on("start", function() {
 
-	// example children
-	var child11 = new CreateRecipe.Recipe({name: "Child11"});
-	var child1Collection = new CreateRecipe.RecipeChildren([child11]);
-	var child1 = new CreateRecipe.Recipe({name: "Child1", children: child1Collection});
-	var child2 = new CreateRecipe.Recipe({name: "Child2"});
-	var child3 = new CreateRecipe.Recipe({name: "Child3"});
-	var childCollection = new CreateRecipe.RecipeChildren([child1, child2, child3]);
-
-	var initialRecipe = new CreateRecipe.Recipe({name: "Top", children: childCollection});
+	var initialRecipe = new CreateRecipe.Recipe({name: "Top"});
 	var topView = new CreateRecipe.RecipeView({model: initialRecipe});
 	CreateRecipe.regions.tree.show(topView);
 
@@ -143,6 +154,9 @@ $(document).ready(function() {
 
 	var focusView = new CreateRecipe.FocusView({model: initialRecipe, topRec: initialRecipe});
 	CreateRecipe.regions.focus.show(focusView);
+
+	var commitView = new CreateRecipe.CommitView({model: initialRecipe});
+	CreateRecipe.regions.control.show(commitView);
     });
 
     CreateRecipe.start();

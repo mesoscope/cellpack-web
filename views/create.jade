@@ -15,6 +15,8 @@ block subhead
         | <button id="delete" type="button"> Delete Recipe </button>
         | <br>
         | <button id="save" type="button"> Save Recipe </button>
+    script(id="controlTemplate", type="text/template")
+        | <button id="committer" type="button"> Save to Server </button>
     script(src="javascripts/create-marionette.js", type="text/javascript")
     
 block content
@@ -28,6 +30,6 @@ block content
             div(id="recipeInterfaceContainer", style="float:right;width:60%;height:100%")
                 div(id="focusContainer", align="middle;overflow:scroll")
                     | Loading Recipe...
-        br
-        div(id="controlContainer", align="middle")
-            button(id="committer", type="button") Save Complete Tree
+            br
+            div(id="controlContainer", align="middle")
+                | Loading Controller...

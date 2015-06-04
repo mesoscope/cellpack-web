@@ -5,3 +5,4 @@ Recipe = require('./recipe');
 exports.recipeModel = Recipe.recipeModel;
 exports.getRecipeNames = Recipe.getRecipeNames;
 exports.getRecipeVersions = Recipe.getRecipeVersions;
+exports.handleRecipes = Recipe.handleRecipes;

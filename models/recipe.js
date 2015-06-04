@@ -1,16 +1,14 @@
 var mongoose = require('mongoose');
 
-// add single option param as proof of concept
-// options should be (key, value) pairs
-// option: String
 var recipeSchema = mongoose.Schema({
     name: String,
     version: Number,
+    option: String,
     children: [],
     current: Boolean
 }, {collection: 'recipes'});
-
-exports.recipeModel = mongoose.model('Recipe', recipeSchema);
+var RecipeModel = mongoose.model('Recipe', recipeSchema);
+exports.recipeModel = RecipeModel;
 
 
 // FIX THESE
@@ -34,3 +32,81 @@ function getRecipeVersions(recipes, recipeName) {
     return versions;
 }
 exports.getRecipeVersions = getRecipeVersions;
+
+// function to convert from json object to new recipe for saving
+// function to extract recipe from nested recipe
+function flattenRecipe(r) {
+    var innerFlatten = function(rec, result) {
+	var newName = rec["name"];
+	var newVersion = rec["version"];
+	var newOption = rec["option"];
+	// this contains actual children
+	var newChildren = rec["children"];
+	var newCurrent = rec["current"];
+	var newRec = {name: newName, version: newVersion, option: newOption, children: newChildren, current: newCurrent};
+	result.push(newRec);
+	if (newChildren) {
+	    for (var c = 0; c < newChildren.length; c++) {
+		innerFlatten(newChildren[c], result);
+	    }
+	}
+	return result;
+    }
+    return innerFlatten(r, []);
+}
+
+function insertRecipes(recArray) {
+    while (recArray) {
+	for (var r = (recArray.length - 1); r >= 0; r--) {
+	    if (!recArray[r]["children"] && notPresent(recArray[r])) {
+		var newRec = new RecipeModel(recArray[r]);
+		newRec.save(function(err) {
+		    console.log(err);
+		});
+		recArray.splice(r, 1);		
+	    } else if (notPresent(recArray[r])) {
+		var allChildIds = allChildrenPresent(recArray[r]["children"]);
+		if (allChildIds) {
+		    var intermediateRec = recArray[r];
+		    intermediateRec["children"] = allChildIds;
+		    var newRec = new RecipeModel(intermediateRec);
+		    newRec.save(function(err) {
+			console.log(err);
+		    });
+		    recArray.splice(r, 1);
+		}
+	    }
+	}
+    }
+}
+
+function notPresent(rec) {
+    var recName = rec["name"];
+    var recVersion = rec["version"];
+    RecipeModel.find({'name': recName, "version": recVersion}, function(err, recipes) {
+	if (recipes)
+	    return false;
+	else
+	    return true;
+    });
+}
+
+function allChildrenPresent(rec) {
+    var queryArray = [];
+    for (var c = 0; c < rec["children"].length; c++) {
+	queryArray.push({"name": rec["children"][c]["name"], "version": rec["children"][c]["version"]});
+    }
+    RecipeModel.find({$or: queryArray}, function(err, recipes) {
+	if (recipes.length == rec["children"].length) {
+	    return recipes.map(function(r) {return r._id.str});
+	}
+	else
+	    return [];
+    });
+}
+
+function handleRecipes(r) {
+    insertRecipes(flattenRecipe(r));
+    //return flattenRecipe(r);
+}
+exports.handleRecipes = handleRecipes;
