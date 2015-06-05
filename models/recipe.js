@@ -1,4 +1,4 @@
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
 
 var recipeSchema = mongoose.Schema({
     name: String,
@@ -6,39 +6,17 @@ var recipeSchema = mongoose.Schema({
     option: String,
     children: [],
     current: Boolean
-}, {collection: 'recipes'});
-var RecipeModel = mongoose.model('Recipe', recipeSchema);
-exports.recipeModel = RecipeModel;
+}, {collection: "recipes"});
+exports.RecipeModel = mongoose.model("Recipe", recipeSchema);
 
-
-// FIX THESE
-// convert these to functional paradigm
-// use map, filter, etc.
-function getRecipeNames(recipes) {
-    // accepts array of recipes
-    var recNames = [];
-    for (var i = 0; i < recipes.length; i++) {
-	recNames.push(recipes[i].name);
-    }
-    return recNames;
-}
-exports.getRecipeNames = getRecipeNames;
-
-function getRecipeVersions(recipes, recipeName) {
-    var versions = [];
-    for (var i = 0; i < recipes.length; i++) {
-	versions.push(recipes[i].version);
-    }
-    return versions;
-}
-exports.getRecipeVersions = getRecipeVersions;
-
+// REMOVE THIS FUNCTION
+// ONCE CLIENT MODELS ARE FLATTENED
+// BY DEFAULT
 function flattenRecipe(r) {
     var innerFlatten = function(rec, result) {
 	var newName = rec["name"];
 	var newVersion = rec["version"];
 	var newOption = rec["option"];
-	
 
 	var childArray = [];
 	for (var d = 0; d < rec["children"].length; d++) {
@@ -74,55 +52,4 @@ function flattenRecipe(r) {
     }
     return innerFlatten(r, []);
 }
-
-function insertRecipes(recArray) {
-    while (recArray.length > 0) {
-	for (var r = (recArray.length - 1); r >= 0; r--) {
-	    // not present in database
-	    if (recArray[r]["tid"].length < 4) {
-		if (recArray[r]["children"].length < 1) {
-		    var baseRec = recArray.splice(r, 1)[0];
-		    var newRec = new RecipeModel(baseRec);
-		    newRec.save(function(err) {
-			console.log(err);
-		    });
-
-		    // update rest of tree with id
-		    for (var c = 0; c < recArray.length; c++) {
-			var pidIndex = recArray[c]["children"].indexOf(baseRec["tid"]);
-			if (pidIndex > -1)
-			    recArray[c]["children"][pidIndex] = newRec._id;
-		    }
-		} 
-		else {
-		    var childrenInDB = true;
-		    for (var k = 0; k < recArray[r]["children"]; k++) {
-			if (recArray[r]["children"][k].length < 4)
-			    childrenInDB = false;
-		    }
-		    if (childrenInDB) {
-			var baseRec = recArray.splice(r, 1)[0];
-			var newRec = new RecipeModel(baseRec);
-			newRec.save(function(err) {
-			    console.log(err);
-			});
-			// update rest of tree with id
-			for (var w = 0; w < recArray.length; w++) {
-			    var pidIndex = recArray[w]["children"].indexOf(baseRec["tid"]);
-			    if (pidIndex > -1)
-				recArray[w]["children"][pidIndex] = newRec._id;
-			}
-		    }
-		}
-	    }
-	}
-    }
-}
-
-
-function handleRecipes(r) {
-    var flattened = flattenRecipe(r);
-    //console.log(flattened);
-    insertRecipes(flattened);
-}
-exports.handleRecipes = handleRecipes;
+exports.flattenRecipe = flattenRecipe;

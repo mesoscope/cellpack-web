@@ -78,12 +78,14 @@ $(document).ready(function() {
     CreateRecipe.FocusView = Marionette.ItemView.extend({
 	initialize: function(options) {
 	    this.topRec = options.topRec;
+	    console.log(recNames);
 	},
 	template: "#focusTemplate",
 	events: {
 	    "click #child": "addChild",
 	    "click #delete": "deleteRec",
-	    "click #save": "saveRec"
+	    "click #save": "saveRec",
+	    "change #recName": "recVersion"
 	},
 	addChild: function() {
 	    var newRecipe = new CreateRecipe.Recipe();
@@ -109,6 +111,9 @@ $(document).ready(function() {
 	    if (newOption)
 		this.model.set("option", newOption);
 	    $("button[data-id=\""+this.model.cid+"\"]").css("background-color", "yellow");
+	},
+	recVersion: function() {
+	    alert("Name Changed");
 	}
     });
 
@@ -119,12 +124,17 @@ $(document).ready(function() {
 	},
 	sendRecipe: function() {
 	    var jsonModel = JSON.stringify(this.model.toJSON());
-	    $.post("/recipe", {recipe: jsonModel}, function(d) {
-		if (d == "success")
-		    alert("Saved Successfully");
-	    });
-	    //redirect?
-	    //window.location.replace("/");
+	    if (jsonModel.indexOf("New Recipe") > -1) {
+		alert("Please Name All Recipes Before Saving");
+	    } else {
+		$.post("/recipe", {recipe: jsonModel}, function(d) {
+		    if (confirm("Create Another New Recipe?\n (Cancel to Return Home)")) {
+			window.location.replace("/create");
+		    } else {
+			window.location.replace("/");
+		    }
+		});
+	    }
 	}
     });
 
@@ -145,7 +155,7 @@ $(document).ready(function() {
     // INITIALIZATION
     CreateRecipe.on("start", function() {
 
-	var initialRecipe = new CreateRecipe.Recipe({name: "Top"});
+	var initialRecipe = new CreateRecipe.Recipe();
 	var topView = new CreateRecipe.RecipeView({model: initialRecipe});
 	CreateRecipe.regions.tree.show(topView);
 

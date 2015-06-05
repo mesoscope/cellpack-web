@@ -11,13 +11,20 @@ block subhead
         | <br>
         | Option <input type="text" id="rec-option" value="<%= option %>" placeholder="<%= option %>">
         | <br>
-        | <button id="child" type="button"> Create Child </button>
-        | <button id="delete" type="button"> Delete Recipe </button>
+        | <button id="child" type="button"> New Child </button>
+        | <br>
+        | <select id="recName"></select>
+        | <select id="recVersion"></select>
+        | <button id="existChild" type="button"> Existing Child </button>
         | <br>
         | <button id="save" type="button"> Save Recipe </button>
+        | <br>
+        | <button id="delete" type="button"> Delete Recipe </button>
     script(id="controlTemplate", type="text/template")
         | <button id="committer" type="button"> Save to Server </button>
-    script(src="javascripts/create-marionette.js", type="text/javascript")
+    script.
+        recNames="#{recNames}";
+    script(src="javascripts/create.js", type="text/javascript")
     
 block content
     div(id="createContainer", align="middle")
