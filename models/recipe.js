@@ -9,6 +9,8 @@ var recipeSchema = mongoose.Schema({
 }, {collection: "recipes"});
 exports.RecipeModel = mongoose.model("Recipe", recipeSchema);
 
+
+
 // REMOVE THIS FUNCTION
 // ONCE CLIENT MODELS ARE FLATTENED
 // BY DEFAULT

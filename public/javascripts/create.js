@@ -25,7 +25,7 @@ $(document).ready(function() {
 	toJSON: function() {
 	    var json = Backbone.Model.prototype.toJSON.apply(this, arguments);
 	    json.cid = this.cid;
-	    return json
+	    return json;
 	},
 	
 	findModelbyCID: function(clientid) {
@@ -78,14 +78,21 @@ $(document).ready(function() {
     CreateRecipe.FocusView = Marionette.ItemView.extend({
 	initialize: function(options) {
 	    this.topRec = options.topRec;
-	    console.log(recNames);
 	},
 	template: "#focusTemplate",
 	events: {
 	    "click #child": "addChild",
 	    "click #delete": "deleteRec",
 	    "click #save": "saveRec",
-	    "change #recName": "recVersion"
+	    "change #nameSelect": "recVersion"
+	},
+	onShow: function() {
+	    var nameArray = recNames.split(",");
+	    var options = "";
+	    $.each(nameArray, function(nameIndex, name) {
+		options = options + "<option "+"value=\""+name+"\">"+name+"</option>";
+	    });
+	    $("#nameSelect").empty().append(options);
 	},
 	addChild: function() {
 	    var newRecipe = new CreateRecipe.Recipe();
@@ -113,7 +120,14 @@ $(document).ready(function() {
 	    $("button[data-id=\""+this.model.cid+"\"]").css("background-color", "yellow");
 	},
 	recVersion: function() {
-	    alert("Name Changed");
+	    $.get("/recipe/"+$("#nameSelect").val(), function(data) {
+		var versions = data.map(function(r) {return r["version"];});
+		var options = "";
+		$.each(versions, function(nameIndex, name) {
+		    options = options + "<option "+"value=\""+name+"\">"+name+"</option>";
+		});
+		$("#recVersion").empty().append(options);
+	    });
 	}
     });
 
