@@ -4,16 +4,10 @@ var recipeSchema = mongoose.Schema({
     name: String,
     version: Number,
     option: String,
-    children: [],
-    current: Boolean
+    children: []
 }, {collection: "recipes"});
 exports.RecipeModel = mongoose.model("Recipe", recipeSchema);
 
-
-
-// REMOVE THIS FUNCTION
-// ONCE CLIENT MODELS ARE FLATTENED
-// BY DEFAULT
 function flattenRecipe(r) {
     var innerFlatten = function(rec, result) {
 	var newName = rec["name"];
@@ -55,3 +49,9 @@ function flattenRecipe(r) {
     return innerFlatten(r, []);
 }
 exports.flattenRecipe = flattenRecipe;
+
+
+function nestRecipe(ra) {
+    return true;
+}
+exports.nestRecipe = nestRecipe;
