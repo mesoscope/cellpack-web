@@ -94,7 +94,7 @@ module.exports = function(app) {
 		    };
             var result = [];
             innerQuery(rec, result, function(finishedArray) {
-                res.render(models.nestRecipe(finishedArray, req.param("recname"), req.param("recversion")));
+                res.send(models.nestRecipe(finishedArray));
             });
 	    });
     });

@@ -50,25 +50,31 @@ function flattenRecipe(r) {
 exports.flattenRecipe = flattenRecipe;
 
 
-function nestRecipe(ra, topName, topVersion) {
-    console.log("Recipe Array Before Nest\n", ra);
-    console.log(topName);
-    console.log(topVersion);
-    var newRec = {};
-    /*
-    for (var r = 0; r < ra.length; r++) {
-        if (ra[r]["name"] == topName && ra[r]["version"] == topVersion) {
-            newRec.name = ra[r]["name"];
-            newRec.version = ra[r]["version"];
-            newRec.option = ra[r]["option"];
-            newRec.children = ra[r]["children"];
-            break;
+function nestRecipe(ra) {
+    while (ra.length > 1) {
+        for (var z = (ra.length-1); z >= 0; z--) {
+            // no children or all children are objects
+            if (ra[z]["children"].length < 1 || ra[z]["children"].every(function(ele, ind, arr) {return ("name" in ele);})) {
+                // insert this recipe
+                // elseware in array
+                for (var y = (ra.length-1); y >= 0; y--) {
+                    for (var x = 0; x < ra[y]["children"].length; x++) {
+                        // this compares string
+                        if (ra[y]["children"][x].toString() == ra[z]["_id"]) {
+                            var tRec = ra.splice(z, 1)[0];
+                            var insertRec = {};
+                            insertRec["eid"] = tRec["_id"];
+                            insertRec["name"] = tRec["name"];
+                            insertRec["version"] = tRec["version"];
+                            insertRec["option"] = tRec["option"];
+                            insertRec["children"] = tRec["children"];
+                            ra[y]["children"][x] = insertRec;
+                        }
+                    }
+                }
+            }
         }
     }
-    var innerNest = function(topRec, ra) {
-    };
-    console.log("Recipe Array After Nest\n", ra);
-    */
-    return newRec;
+    return ra;
 }
 exports.nestRecipe = nestRecipe;
