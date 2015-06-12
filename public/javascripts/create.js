@@ -22,6 +22,7 @@ $(document).ready(function() {
         },
         
         toJSON: function() {
+            // gives server json access to cid 
             var json = Backbone.Model.prototype.toJSON.apply(this, arguments);
             json.cid = this.cid;
             return json;
@@ -100,7 +101,7 @@ $(document).ready(function() {
             var newRecipe = new CreateRecipe.Recipe();
             this.model.get("children").add(newRecipe);
             $("button").filter(function() {
-                return $(this).css("background-color") == "rgb(255, 255, 0)"
+                return $(this).css("background-color") == "rgb(255, 255, 0)";
             }).css("background-color", "white");
             $("button[data-id=\""+newRecipe.cid+"\"]").css("background-color", "yellow");
             var newView = new CreateRecipe.FocusView({model: newRecipe, topRec: this.topRec});
@@ -134,6 +135,7 @@ $(document).ready(function() {
         },
         existChild: function() {
             $.get("/recipe/"+$("#nameSelect").val()+"/"+$("#recVersion").val(), function(data) {
+                console.log(data);
                 /*
                 var buildTree = function(topModel, recArray) {
                     if (topModel.get("children").length > 0) {
@@ -145,8 +147,6 @@ $(document).ready(function() {
                         }
                     }
                 };
-                */
-                console.log(data);
                 
                 for (var r = 0; r < data.length; r++) {
                     if (data[r]["name"] == $("#nameSelect").val()) {
@@ -156,6 +156,7 @@ $(document).ready(function() {
                     }
                 }
                 console.log(topRecipe);
+                */
                 //buildTree(topRecipe, data);
                 //this.model.get("children").add(topRecipe);
             });

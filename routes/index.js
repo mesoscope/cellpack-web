@@ -1,4 +1,6 @@
+var async = require("async");
 var models = require("../models");
+
 
 module.exports = function(app) {
     app.get("/", function(req, res) {
@@ -14,9 +16,9 @@ module.exports = function(app) {
     // CONVERTS TO FLAT REPRESENTATION
     // PUSHES FLAT REPRESENTATION TO DB
     app.post("/recipe/:recname/:recversion", function(req, res) {
-        // fix function
-        console.log(req.body["recipe"]);
-        /*
+        // FIX
+        // PREVENT NAME CONFLICTS
+        // USE ASYNC
 	    var jsonRec = JSON.parse(req.body["recipe"]);
 	    var flattened = models.flattenRecipe(jsonRec);
 
@@ -45,7 +47,7 @@ module.exports = function(app) {
                         }
                         if (childrenInDB) {
                             var baseRec = flattened.splice(r, 1)[0];
-                            var newRec = new RecipeModel(baseRec);
+                            var newRec = new models.RecipeModel(baseRec);
                             newRec.save(function(err) {
                                 if (err) {
                                     console.log(err);
@@ -62,7 +64,6 @@ module.exports = function(app) {
 	        }
 	    }
 	    res.send("success");
-        */
     });
 
     // REST API
@@ -71,25 +72,31 @@ module.exports = function(app) {
     // CONVERTS TO NESTED REPRESENTATION
     // RETURNS NESTED REPRESENTATION TO CLIENT
     app.get("/recipe/:recname/:recversion", function(req, res) {
-        console.log(req.body["recipe"]);
-        // fix function
-        /*
-        models.RecipeModel.findOne({ "_id": req.param("recid")}, function(err, rec) {
-            var innerQuery = function(recipe, recArray, dist) {
-                recArray.push(recipe);
+        models.RecipeModel.findOne({ "name": req.param("recname"), "version": req.param("recversion")}, function(err, rec) {
+            var innerQuery = function(recipe, arr, finishedFunction) {
+                arr.push(recipe);
                 if (recipe["children"].length > 0) {
-                    for (var z = 0; z < recipe["children"].length; z++) {
-                        models.RecipeModel.findOne({"_id": recipe["children"][z]}, function(err, r) {
-                            innerQuery(r, recArray, false);
-                        });
-                    }
+                    async.forEachOf(recipe["children"],
+                                    function(childId, cidIndex, cb) {
+                                        models.RecipeModel.findOne({"_id": childId}, function(err, rec) {
+                                            innerQuery(rec, arr, finishedFunction);
+                                            cb();
+                                        });
+                                    },
+                                    function(err) {
+                                        if (err) {
+                                            console.log(err);
+                                        }
+                                    });
+                } else {
+                    finishedFunction(arr);
                 }
 		    };
-            var ra = [];
-            innerQuery(rec, ra);
-		    res.send(ra);
+            var result = [];
+            innerQuery(rec, result, function(finishedArray) {
+                res.render(models.nestRecipe(finishedArray, req.param("recname"), req.param("recversion")));
+            });
 	    });
-        */
     });
 
     // REST API
