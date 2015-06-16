@@ -63,7 +63,7 @@ function nestRecipe(ra) {
                         if (ra[y]["children"][x].toString() == ra[z]["_id"]) {
                             var tRec = ra.splice(z, 1)[0];
                             var insertRec = {};
-                            insertRec["eid"] = tRec["_id"];
+                            insertRec["_id"] = tRec["_id"];
                             insertRec["name"] = tRec["name"];
                             insertRec["version"] = tRec["version"];
                             insertRec["option"] = tRec["option"];
@@ -75,6 +75,12 @@ function nestRecipe(ra) {
             }
         }
     }
-    return ra;
+    var topRec = {};
+    topRec["_id"] = ra[0]["_id"];
+    topRec["name"] = ra[0]["name"];
+    topRec["version"] = ra[0]["version"];
+    topRec["option"] = ra[0]["option"];
+    topRec["children"] = ra[0]["children"];
+    return topRec;
 }
 exports.nestRecipe = nestRecipe;

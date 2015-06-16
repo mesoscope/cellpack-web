@@ -6,23 +6,26 @@ $(document).ready(function() {
     // BACKBONE MODEL
     CreateRecipe.Recipe = Backbone.Model.extend({
         // define url for REST operations??
-
+        idAttribute: "_id",
         initialize: function() {
             var children = this.get("children");
             if (!children) {
                 var emptyChildren = new CreateRecipe.RecipeChildren([]);
                 this.set("children", emptyChildren);
+            } else {
+                var realChildren = new CreateRecipe.RecipeChildren(children);
+                this.set("children", realChildren);
             }
         },
-
         defaults: {
             name: "New Recipe",
             version: 0,
             option: "testValue"
         },
-        
+
         toJSON: function() {
             // gives server json access to cid 
+            // don't actually need this
             var json = Backbone.Model.prototype.toJSON.apply(this, arguments);
             json.cid = this.cid;
             return json;
@@ -106,12 +109,15 @@ $(document).ready(function() {
             $("button[data-id=\""+newRecipe.cid+"\"]").css("background-color", "yellow");
             var newView = new CreateRecipe.FocusView({model: newRecipe, topRec: this.topRec});
             CreateRecipe.regions.focus.show(newView);
+            this.recVersion();
         },
         deleteRec: function() {
+            this.model.unset("_id");
             this.model.destroy();
             $("button[data-id=\""+this.topRec.cid+"\"]").css("background-color", "yellow");
             var newView = new CreateRecipe.FocusView({model: this.topRec, topRec: this.topRec});
             CreateRecipe.regions.focus.show(newView);
+            this.recVersion();
         },
         saveRec: function() {
             var newName = $("#rec-name").val();
@@ -134,31 +140,10 @@ $(document).ready(function() {
             });
         },
         existChild: function() {
+            var view = this;
             $.get("/recipe/"+$("#nameSelect").val()+"/"+$("#recVersion").val(), function(data) {
-                console.log(data);
-                /*
-                var buildTree = function(topModel, recArray) {
-                    if (topModel.get("children").length > 0) {
-                        for (var c = 0; c < topModel.get("children").length; c++) {
-                            for (var j = 0; j < recArray.length; j++) {
-                                if (topModel.get("children")[c]["id"])
-                            }
-                            topModel.get("children").add(
-                        }
-                    }
-                };
-                
-                for (var r = 0; r < data.length; r++) {
-                    if (data[r]["name"] == $("#nameSelect").val()) {
-                        var topRecipe = new CreateRecipe.Recipe({"name": data[r]["name"], "version": data[r]["version"], "option": data[r]["option"], "current": data[r]["current"]});
-                        data.splice(r, 1);
-                        break;
-                    }
-                }
-                console.log(topRecipe);
-                */
-                //buildTree(topRecipe, data);
-                //this.model.get("children").add(topRecipe);
+                var testModel = new CreateRecipe.Recipe(data);
+                view.model.get("children").add(testModel);
             });
         }
     });
@@ -200,19 +185,18 @@ $(document).ready(function() {
     
     // INITIALIZATION
     CreateRecipe.on("start", function() {
+        var initialRecipe = new CreateRecipe.Recipe();
+        var topView = new CreateRecipe.RecipeView({model: initialRecipe});
+        CreateRecipe.regions.tree.show(topView);
 
-	var initialRecipe = new CreateRecipe.Recipe();
-	var topView = new CreateRecipe.RecipeView({model: initialRecipe});
-	CreateRecipe.regions.tree.show(topView);
+        var focusSelector = "button:contains('"+initialRecipe.get("name")+"')";
+        $(focusSelector).css("background-color", "yellow");
 
-	var focusSelector = "button:contains('"+initialRecipe.get("name")+"')";
-	$(focusSelector).css("background-color", "yellow");
+        var focusView = new CreateRecipe.FocusView({model: initialRecipe, topRec: initialRecipe});
+        CreateRecipe.regions.focus.show(focusView);
 
-	var focusView = new CreateRecipe.FocusView({model: initialRecipe, topRec: initialRecipe});
-	CreateRecipe.regions.focus.show(focusView);
-
-	var commitView = new CreateRecipe.CommitView({model: initialRecipe});
-	CreateRecipe.regions.control.show(commitView);
+        var commitView = new CreateRecipe.CommitView({model: initialRecipe});
+        CreateRecipe.regions.control.show(commitView);
     });
 
     CreateRecipe.start();
