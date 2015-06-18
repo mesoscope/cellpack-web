@@ -20,12 +20,11 @@ $(document).ready(function() {
         defaults: {
             name: "New Recipe",
             version: 0,
+            current: true,
             option: "testValue"
         },
 
         toJSON: function() {
-            // gives server json access to cid 
-            // don't actually need this
             var json = Backbone.Model.prototype.toJSON.apply(this, arguments);
             json.cid = this.cid;
             return json;
@@ -129,6 +128,7 @@ $(document).ready(function() {
             $("button[data-id=\""+this.model.cid+"\"]").css("background-color", "yellow");
         },
         recVersion: function() {
+            // move this to separate jquery file
             $.get("/recipe/"+$("#nameSelect").val(), function(versions) {
                 $("#recVersion").empty().append(function() {
                     var options = "";
