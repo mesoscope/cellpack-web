@@ -10,4 +10,10 @@ $(document).ready(function() {
             });
         });
     }).change();
+
+    $("#download").click(function() {
+        // move this to another file
+        // isolate versioner?
+        window.location.assign("/recipe/"+$("#nameSelect").val()+"/"+$("#recVersion").val()+"/download");
+    });
 });

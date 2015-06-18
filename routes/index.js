@@ -71,7 +71,7 @@ module.exports = function(app) {
     // PULLS FLAT REPRESENTATION FROM DB
     // CONVERTS TO NESTED REPRESENTATION
     // RETURNS NESTED REPRESENTATION TO CLIENT
-    app.get("/recipe/:recname/:recversion", function(req, res) {
+    app.get("/recipe/:recname/:recversion/:download?", function(req, res) {
         models.RecipeModel.findOne({ "name": req.param("recname"), "version": req.param("recversion")}, function(err, rec) {
             var innerQuery = function(recipe, arr, finishedFunction) {
                 arr.push(recipe);
@@ -94,7 +94,14 @@ module.exports = function(app) {
 		    };
             var result = [];
             innerQuery(rec, result, function(finishedArray) {
-                res.send(models.nestRecipe(finishedArray));
+                if (req.param("download")) {
+                    var model = models.nestRecipe(finishedArray);
+                    var modelString = JSON.stringify(model);
+                    res.set({"Content-Disposition":"attachment; filename="+model["name"]+"_"+model["version"]+".json"});
+                    res.send(modelString);
+                } else {
+                    res.send(models.nestRecipe(finishedArray));
+                }
             });
 	    });
     });
@@ -108,6 +115,5 @@ module.exports = function(app) {
             res.send(versions);
         });
     });
-
     require("./create")(app);
 }
