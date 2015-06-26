@@ -1,4 +1,5 @@
 var mongoose = require("mongoose");
+exports.oid = mongoose.Types.ObjectId;
 
 var recipeSchema = mongoose.Schema({
     name: String,
@@ -50,8 +51,10 @@ exports.flattenRecipe = flattenRecipe;
 
 
 function nestRecipe(ra) {
+    console.log(ra);
     while (ra.length > 1) {
         for (var z = (ra.length-1); z >= 0; z--) {
+
             if (ra[z]["children"].length < 1 || ra[z]["children"].every(function(ele, ind, arr) {return ("name" in ele);})) {
                 for (var y = (ra.length-1); y >= 0; y--) {
                     for (var x = 0; x < ra[y]["children"].length; x++) {

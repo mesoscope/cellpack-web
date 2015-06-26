@@ -19,61 +19,78 @@ module.exports = function(app) {
 	    var jsonRec = JSON.parse(req.body["recipe"]);
 	    var flattened = models.flattenRecipe(jsonRec);
 
-
-        var control = 3;
-
-	    while (control > 0) {
-	        for (var r = (flattened.length - 1); r >= 0; r--) {
-                // drop index in order to search
-                var queryCurrent = {"name": flattened[r]["name"], "version": flattened[r]["version"], "option": flattened[r]["option"], "children": flattened[r]["children"], "current": flattened[r]["current"]};
-                models.RecipeModel.findOne(queryCurrent, function(rec, err) {
-                    if (!rec) {
-                        // recipe doesn't exist exactly in database 
-
-                        console.log(flattened[r]);
-                        var childrenInDB = true;
-                        /*
-                        for (var c = 0; c < flattened[r]["children"].length; c++) {
-                            // does this need async
-                            var queryChild = {"name": flattened[r]["children"][c]["name"], "version": flattened[r]["children"][c]["version"], "option": flattened[r]["chidren"][c]["option"], "children": flattened[r]["children"][c]["children"], "current": flattened[r]["children"][c]["current"]};
-                            models.RecipeModel.findOne(queryChild, function(rec, err) {
-                                if (rec) {
-                                    childrenInDB = false;
-                                }
-                            });
-                        }
-                        */
-                        console.log(childrenInDB);
-                        /*
-                        if (flattened[r]["children"].length < 1 || childrenInDB) {
-                            // safe to push into db
-                            var baseRec = flattened.splice(r, 1)[0];
-                            var zid = baseRec["_id"];
-                            delete baseRec["_id"];
-                            models.RecipeModel.findOne({"name": baseRec["name"], "current": true}, function(rec, err) {
-                                if (rec) {
-                                    baseRec["version"] = rec["version"] + 1;
-                                    baseRec["current"] = true;
-                                    rec.current = false;
-                                    rec.save();
-                                }
-                                var newRec = new models.RecipeModel(baseRec);
-                                newRec.save();
-                                for (var w = 0; w < flattened.length; w++) {
-                                    var pidIndex = flattened[w]["children"].indexOf(zid);
-                                    if (pidIndex > -1) {
-                                        flattened[w]["children"][pidIndex] = newRec._id;
+        var iterPost = function(iterArray) {
+            // remove series?
+            async.forEachOfSeries(iterArray, function(rec, recIndex, cb) {
+                if (rec) {
+                    var queryCurrent = {"name": rec["name"], "version": rec["version"], "option": rec["option"], "children": rec["children"], "current": rec["current"]};
+                    models.RecipeModel.findOne(queryCurrent, function(err, recMaybe) {
+                        if (!recMaybe) {
+                            async.every(queryCurrent["children"], function(c, cab) {
+                                var inDB = true;
+                                for (var w = 0; w < iterArray.length ; w++) {
+                                    if (iterArray[w]["_id"] == c) {
+                                        inDB = false;
+                                        var queryChild = {"name": iterArray[w]["name"], "version": iterArray[w]["version"], "option": iterArray[w]["option"], "children": iterArray[w]["children"], "current": iterArray[w]["current"]};
+                                        break;
                                     }
                                 }
+                                if (inDB) {
+                                    var newId = models.oid(c.toString());
+                                    var queryChild = {"_id": newId};
+                                }
+                                models.RecipeModel.findOne(queryChild, function(err, recChild) {
+                                    if (recChild) {
+                                        cab(true);
+                                    } else {
+                                        cab(false);
+                                    }
+                                });
+                            }, function(result) {
+                                if (result) {
+                                    var baseRec = iterArray.splice(recIndex, 1)[0];
+                                    var zid = baseRec["_id"];
+                                    delete baseRec["_id"];
+                                    models.RecipeModel.findOne({"name": baseRec["name"], "current": true}, function (err, recName) {
+                                        if (recName) {
+                                            baseRec["version"] = recName["version"] + 1;
+                                            baseRec["current"] = true;
+                                            recName.current = false;
+                                            recName.save();
+                                        }
+                                        var newRec = new models.RecipeModel(baseRec);
+                                        newRec.save();
+                                        for (var a = 0; a < iterArray.length; a++) {
+                                            var pidIndex = iterArray[a]["children"].indexOf(zid);
+                                            if (pidIndex > -1) {
+                                                iterArray[a]["children"][pidIndex] = newRec._id.toString();
+                                            }
+                                        }
+                                        cb();
+                                    });
+                                } else {
+                                    cb();
+                                }
                             });
                         }
-                        */
+                    });
+                } else {
+                    cb();
+                }
+            }, function(err) {
+                // called at end of async each
+                if (err) {
+                    console.log(err);
+                } else {
+                    if (iterArray.length > 0) {
+                        iterPost(iterArray);
                     }
-                });
-            }
-            control--;
-	    }
-	    res.send("success");
+                }
+            });
+        };
+
+        iterPost(flattened);
+        res.send("success");
     });
 
     // REST API
@@ -105,6 +122,7 @@ module.exports = function(app) {
             var result = [];
             innerQuery(rec, result, function(finishedArray) {
                 if (req.param("download")) {
+                    console.log(finishedArray);
                     var model = models.nestRecipe(finishedArray);
                     var modelString = JSON.stringify(model);
                     res.set({"Content-Disposition":"attachment; filename="+model["name"]+"_"+model["version"]+".json"});
