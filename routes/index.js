@@ -20,7 +20,6 @@ module.exports = function(app) {
 	    var flattened = models.flattenRecipe(jsonRec);
 
         var iterPost = function(iterArray) {
-            // remove series?
             async.forEachOfSeries(iterArray, function(rec, recIndex, cb) {
                 if (rec) {
                     var queryCurrent = {"name": rec["name"], "version": rec["version"], "option": rec["option"], "children": rec["children"], "current": rec["current"]};
@@ -100,37 +99,35 @@ module.exports = function(app) {
     // RETURNS NESTED REPRESENTATION TO CLIENT
     app.get("/recipe/:recname/:recversion/:download?", function(req, res) {
         models.RecipeModel.findOne({ "name": req.param("recname"), "version": req.param("recversion")}, function(err, rec) {
-            var innerQuery = function(recipe, arr, finishedFunction) {
-                arr.push(recipe);
-                if (recipe["children"].length > 0) {
-                    async.forEachOf(recipe["children"],
-                                    function(childId, cidIndex, cb) {
-                                        models.RecipeModel.findOne({"_id": childId}, function(err, rec) {
-                                            innerQuery(rec, arr, finishedFunction);
-                                            cb();
-                                        });
-                                    },
-                                    function(err) {
-                                        if (err) {
-                                            console.log(err);
-                                        }
-                                    });
+            var queryTree = function(recNode) {
+                result.push(recNode);
+                //console.log(result);
+                if (recNode["children"].length > 0) {
+                    models.RecipeModel.find({"_id": {$in: recNode["children"]}}, function(err, recs) {
+                        for (var c = 0; c < recs.length ; c++) {
+                            calls = calls + 1;
+                            queryTree(recs[c]);
+                            calls = calls - 1;
+                        }
+                    });
                 } else {
-                    finishedFunction(arr);
+                    calls = calls - 1;
+                    if (calls == 0) {
+                        //console.log("Calls Done?");
+                        if (req.param("download")) {
+                            var model = models.nestRecipe(result);
+                            var modelString = JSON.stringify(model);
+                            res.set({"Content-Disposition":"attachment; filename="+model["name"]+"_"+model["version"]+".json"});
+                            res.send(modelString);
+                        } else {
+                            res.send(models.nestRecipe(result));
+                        }
+                    }
                 }
-		    };
+            };
             var result = [];
-            innerQuery(rec, result, function(finishedArray) {
-                if (req.param("download")) {
-                    console.log(finishedArray);
-                    var model = models.nestRecipe(finishedArray);
-                    var modelString = JSON.stringify(model);
-                    res.set({"Content-Disposition":"attachment; filename="+model["name"]+"_"+model["version"]+".json"});
-                    res.send(modelString);
-                } else {
-                    res.send(models.nestRecipe(finishedArray));
-                }
-            });
+            var calls = 1;
+            queryTree(rec);
 	    });
     });
 
