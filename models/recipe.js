@@ -51,28 +51,38 @@ exports.flattenRecipe = flattenRecipe;
 
 
 function nestRecipe(ra) {
-    console.log(ra);
+    //console.log(ra);
     while (ra.length > 1) {
-        for (var z = (ra.length-1); z >= 0; z--) {
-
-            if (ra[z]["children"].length < 1 || ra[z]["children"].every(function(ele, ind, arr) {return ("name" in ele);})) {
-                for (var y = (ra.length-1); y >= 0; y--) {
-                    for (var x = 0; x < ra[y]["children"].length; x++) {
-                        if (ra[y]["children"][x].toString() == ra[z]["_id"]) {
-                            var tRec = ra.splice(z, 1)[0];
-                            var insertRec = {};
-                            insertRec["_id"] = tRec["_id"];
-                            insertRec["name"] = tRec["name"];
-                            insertRec["version"] = tRec["version"];
-                            insertRec["current"] = tRec["current"];
-                            insertRec["option"] = tRec["option"];
-                            insertRec["children"] = tRec["children"];
-                            ra[y]["children"][x] = insertRec;
+        var inner = function () {
+            for (var z = (ra.length-1); z >= 0; z--) {
+                //console.log(ra);
+                if (ra[z]["children"].length < 1 || ra[z]["children"].every(function(ele, ind, arr) {return ("name" in ele);})) {
+                    //console.log(ra[z]);
+                    //console.log(ra[z]["_id"]);
+                    for (var y = (ra.length-1); y >= 0; y--) {
+                        //console.log(ra[z]["_id"]);
+                        for (var x = 0; x < ra[y]["children"].length; x++) {
+                            //console.log(ra);
+                            //console.log(z);
+                            //console.log(ra[z]);
+                            if (ra[y]["children"][x].toString() == ra[z]["_id"]) {
+                                var tRec = ra.splice(z, 1)[0];
+                                var insertRec = {};
+                                insertRec["_id"] = tRec["_id"];
+                                insertRec["name"] = tRec["name"];
+                                insertRec["version"] = tRec["version"];
+                                insertRec["current"] = tRec["current"];
+                                insertRec["option"] = tRec["option"];
+                                insertRec["children"] = tRec["children"];
+                                ra[y]["children"][x] = insertRec;
+                                return;
+                            }
                         }
                     }
                 }
             }
         }
+        inner();
     }
     var topRec = {};
     topRec["_id"] = ra[0]["_id"];
