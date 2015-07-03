@@ -1,0 +1,6 @@
+[
+	{name: "recipe1", version: 0, current: false, option: "optionval", children: []},
+	{name: "recipe1", version: 1, current: true, option: "optionval2", children: []},
+	{name: "recipe2", version: 0, current: true, option: "optionval", children: []},
+	{name: "recipe3", version: 0, current: true, option: "optionval", children: []}
+]
