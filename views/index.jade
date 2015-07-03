@@ -1,13 +1,13 @@
 extends layout
 
-block subhead
-    script(src="javascripts/version.js", type="text/javascript")
-
 block content
     div(id="versioncontain", style="height:75px", align="middle")
-        h2 Download autoPACK Recipe &nbsp
+        h2 Download cellPACK Recipe &nbsp
         select(id="nameSelect")
             each rn, index in recNames
                 option(value=rn)= rn
         select(id="recVersion")
-        button(id="download", type="button") Download
+        br
+        button(id="download", class="btn btn-default", type="button") Download
+    block scripts
+        script(src="javascripts/version.js")

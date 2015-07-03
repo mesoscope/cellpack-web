@@ -2,18 +2,22 @@ doctype html
 html
     head
         title= title
-        link(rel="stylesheet", href="stylesheets/style.css")
-        script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", type="text/javascript")
-        block subhead
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width, initial-scale=1")
+        link(rel="stylesheet", href="stylesheets/bootstrap.min.css")
     body
         div(id="siteContainer", style="width:900px, height:1000px")
-            div(id="bannerContainer", style="height:125px", align="right")
+            div(id="bannerContainer", style="height:125px;background-color:#778899", align="middle")
                 img(src="images/autopack.png")
 
             div(id="tabContainer", style="height:50px")
-                div(style="float:left", align="center")
-                    a(href="/") Download Recipe
-                div(style="float:right", align="center")
-                    a(href="/create") Create Recipe
+                div(class="col-xs-6", align="center")
+                    a(href="/", class="btn btn-primary btn-block") Download Recipe
+                div(class="col-xs-6", align="center")
+                    a(href="/create", class="btn btn-primary btn-block") Create Recipe
 
             block content
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js", type="text/javascript")
+        script(src="javascripts/bootstrap.min.js")
+        block scripts
