@@ -1,12 +1,13 @@
 extends layout
 
 block content
-    div(id="versioncontain", style="height:75px", align="middle")
+    div(id="versioncontain", class="row", align="middle")
         h2 Download cellPACK Recipe &nbsp
         select(id="nameSelect")
             each rn, index in recNames
                 option(value=rn)= rn
         select(id="recVersion")
+        br
         br
         button(id="download", class="btn btn-default", type="button") Download
     block scripts

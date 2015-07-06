@@ -1,18 +1,19 @@
 extends layout
 
 block content
-    div(id="createContainer", align="middle")
-        div(id="createHeader")
+    div(id="createContainer", class="row-fluid")
+        div(id="createHeader", align="middle")
             h2 Create New Recipe
 
-        div(id="interfaceContainer" style="height:300px")
-            div(id="treeContainer", style="float:left;width:39%;height:100%;overflow:scroll")
-            div(id="recipeInterfaceContainer", style="float:right;width:60%;height:100%")
+        div(id="interfaceContainer", class="row", style="height:400px")
+            div(id="treeContainer", class="col-xs-6")
+            div(id="recipeInterfaceContainer", class="col-xs-6")
                 div(id="focusContainer", align="middle;overflow:scroll")
             br
+            br
             div(id="controlContainer", align="middle")
-                | Loading Controller...
-    block scripts
+ 
+block scripts
         script(src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js", type="text/javascript")
         script(src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.0/backbone-min.js", type="text/javascript")
         script(src="https://cdnjs.cloudflare.com/ajax/libs/backbone.marionette/2.4.1/backbone.marionette.min.js", type="text/javascript")
@@ -23,20 +24,20 @@ block content
             |   <label for="rec-name">Recipe Name</label>
             |   <input class="form-control" type="text" id="rec-name" value="<%= name %>" placeholder="<%= name %>">
             | </div>
-            | <br>
-            | Option <input type="text" id="rec-option" value="<%= option %>" placeholder="<%= option %>">
-            | <br>
-            | <button id="child" type="button"> New Child </button>
-            | <br>
-            | <select id="nameSelect" class="testC"></select>
-            | <select id="recVersion"></select>
-            | <button id="existChild" type="button"> Existing Child </button>
-            | <br>
-            | <button id="save" type="button"> Save Recipe </button>
-            | <br>
-            | <button id="delete" type="button"> Delete Recipe </button>
+            | <div class="form-group">
+            |   <label for="rec-option">Option</label>
+            |   <input class="form-control" type="text" id="rec-option" value="<%= option %>" placeholder="<%= option %>">
+            | </div>
+            | <div align="middle">
+            |   <button id="child" class="btn btn-default" type="button"> New Child </button>
+            |   <select id="nameSelect"></select>
+            |   <select id="recVersion"></select>
+            |   <button id="existChild" class="btn btn-default" type="button"> Existing Child </button>
+            |   <button id="save" class="btn btn-default" type="button"> Save Recipe </button>
+            |   <button id="delete" class="btn btn-default" type="button"> Delete Recipe </button>
+            | </div>
         script(id="controlTemplate", type="text/template")
-            | <button id="committer" type="button"> Save to Server </button>
+            | <button id="committer" class="btn btn-default" type="button"> Save All to Server </button>
         script.
             recNames="#{recNames}";
         script(src="javascripts/create.js", type="text/javascript")

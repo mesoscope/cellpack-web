@@ -7,11 +7,11 @@ html
         meta(name="viewport", content="width=device-width, initial-scale=1")
         link(rel="stylesheet", href="stylesheets/bootstrap.min.css")
     body
-        div(id="siteContainer", style="width:900px, height:1000px")
-            div(id="bannerContainer", style="height:125px;background-color:#778899", align="middle")
+        div(id="siteContainer", class="container-fluid")
+            div(id="bannerContainer", class="row", style="background-color:#778899", align="middle")
                 img(src="images/autopack.png")
 
-            div(id="tabContainer", style="height:50px")
+            div(id="tabContainer", class="row", style="height:50px")
                 div(class="col-xs-6", align="center")
                     a(href="/", class="btn btn-primary btn-block") Download Recipe
                 div(class="col-xs-6", align="center")
