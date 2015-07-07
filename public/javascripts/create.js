@@ -142,12 +142,16 @@ $(document).ready(function() {
         existChild: function() {
             var view = this;
             $.get("/recipe/"+$("#nameSelect").val()+"/"+$("#recVersion").val(), function(data) {
+                //console.log("Returned", data);
                 var testModel = new CreateRecipe.Recipe(data);
+                console.log(testModel);
                 view.model.get("children").add(testModel);
             });
         }
     });
 
+
+    // Change this to jquery event
     CreateRecipe.CommitView = Marionette.ItemView.extend({
         template: "#controlTemplate",
         events: {

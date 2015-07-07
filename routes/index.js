@@ -102,6 +102,7 @@ module.exports = function(app) {
             var queryTree = function(recNode) {
                 result.push(recNode);
                 //console.log(result);
+                //console.log(calls);
                 if (recNode["children"].length > 0) {
                     models.RecipeModel.find({"_id": {$in: recNode["children"]}}, function(err, recs) {
                         for (var c = 0; c < recs.length ; c++) {
@@ -126,7 +127,7 @@ module.exports = function(app) {
                 }
             };
             var result = [];
-            var calls = 1;
+            var calls = 0;
             queryTree(rec);
 	    });
     });

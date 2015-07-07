@@ -1,17 +1,14 @@
 extends layout
 
 block content
-    div(id="createContainer", class="row-fluid")
-        div(id="createHeader", align="middle")
-            h2 Create New Recipe
+    div(id="createHeader", class="row", align="middle")
+        h2 Create New Recipe
 
-        div(id="interfaceContainer", class="row", style="height:400px")
-            div(id="treeContainer", class="col-xs-6")
-            div(id="recipeInterfaceContainer", class="col-xs-6")
-                div(id="focusContainer", align="middle;overflow:scroll")
-            br
-            br
-            div(id="controlContainer", align="middle")
+    div(id="interfaceContainer", class="row")
+        div(id="treeContainer", class="col-xs-6")
+        div(id="recipeInterfaceContainer", class="col-xs-6")
+            div(id="focusContainer", align="middle;overflow:scroll")
+        div(id="controlContainer", class="row", align="middle")
  
 block scripts
         script(src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js", type="text/javascript")
@@ -40,4 +37,4 @@ block scripts
             | <button id="committer" class="btn btn-default" type="button"> Save All to Server </button>
         script.
             recNames="#{recNames}";
-        script(src="javascripts/create.js", type="text/javascript")
+        script(src="javascripts/create.js")
