@@ -2,8 +2,8 @@ $(document).ready(function() {
 
     var CreateRecipe = new Marionette.Application();
 
+    // MODEL STARTS HERE 
     // RECIPE
-    // BACKBONE MODEL
     CreateRecipe.Recipe = Backbone.Model.extend({
         // define url for REST operations??
         idAttribute: "_id",
@@ -39,14 +39,25 @@ $(document).ready(function() {
     });
 
     // RECIPE CHILDREN
-    // BACKBONE COLLECTION
     CreateRecipe.RecipeChildren = Backbone.Collection.extend({
 	    model: CreateRecipe.Recipe
     });
 
-    // RECIPE VIEW
-    CreateRecipe.RecipeView = Marionette.CompositeView.extend({
-        // model template
+    // FLAT RECIPES
+    CreateRecipe.Recipes = Backbone.Collection.extend({
+        model: CreateRecipe.Recipe
+    });
+    // MODEL ENDS HERE
+
+
+
+
+
+
+
+    // VIEWS START HERE
+    // TREE VIEW
+    CreateRecipe.TreeView = Marionette.CollectionView.extend({
         template: "#recipeTemplate",
         tagName: "ul",
         initialize: function() {
@@ -58,14 +69,12 @@ $(document).ready(function() {
         changeSelected: function(e) {
             e.stopPropagation();
 
-            // remove yellow selection
             $("button").filter(function() {
                 return $(this).css("background-color") == "rgb(255, 255, 0)"
             }).css("background-color", "white");
 
             $(e.currentTarget).css("background-color", "yellow");
             
-            // create new view with model
             var newFocusRecipe = this.model.findModelbyCID($(e.currentTarget).attr("data-id"));
             var focusTop = CreateRecipe.regions.focus.currentView.getOption("topRec");
             var newView = new CreateRecipe.FocusView({model: newFocusRecipe, topRec: focusTop});
@@ -73,6 +82,28 @@ $(document).ready(function() {
         },
         modelEvents: {
             "change": "render"
+        }
+    });
+
+    // TREE CONTROL VIEW
+    CreateRecipe.TreeControlView = Marionette.CollectionView.extend({
+        template: "",
+        events: {
+            "click #committer": "sendRecipe"
+        },
+        sendRecipe: function() {
+            var jsonModel = JSON.stringify(this.model.toJSON());
+            if (jsonModel.indexOf("New Recipe") > -1) {
+                alert("Please Name All Recipes Before Saving");
+            } else {
+                $.post("/recipe/"+this.model.get("name")+"/"+this.model.get("version"), {recipe: jsonModel}, function(d) {
+                    if (confirm("Create Another New Recipe?\n (Cancel to Return Home)")) {
+                        window.location.replace("/create");
+                    } else {
+                        window.location.replace("/");
+                    }
+                });
+            }
         }
     });
 
@@ -150,38 +181,29 @@ $(document).ready(function() {
     });
 
 
-    // Change this to jquery event
-    CreateRecipe.CommitView = Marionette.ItemView.extend({
-        template: "#controlTemplate",
-        events: {
-            "click #committer": "sendRecipe"
-        },
-        sendRecipe: function() {
-            var jsonModel = JSON.stringify(this.model.toJSON());
-            if (jsonModel.indexOf("New Recipe") > -1) {
-                alert("Please Name All Recipes Before Saving");
-            } else {
-                $.post("/recipe/"+this.model.get("name")+"/"+this.model.get("version"), {recipe: jsonModel}, function(d) {
-                    if (confirm("Create Another New Recipe?\n (Cancel to Return Home)")) {
-                        window.location.replace("/create");
-                    } else {
-                        window.location.replace("/");
-                    }
-                });
-            }
-        }
+    // FOCUS CONTROL VIEW
+    CreateRecipe.FocusControlView = Marionette.CollectionView.extend({
+        template: "",
     });
+    // VIEWS END HERE 
+    
+
+
+
+
+
+
+
 
     // SETUP
     CreateRecipe.on("before:start", function() {
         var RecipeContainer = Marionette.LayoutView.extend({
-            el: "#interfaceContainer",
+            el: "#createContainer",
             regions: {
                 tree: "#treeContainer",
+                treeControl: "#treeControl",
                 focus: "#focusContainer",
-                // eliminate this one
-                // on refactor
-                control: "#controlContainer"
+                focusControl: "#focusControl"
             }
         });
         CreateRecipe.regions = new RecipeContainer();
@@ -191,17 +213,24 @@ $(document).ready(function() {
     // INITIALIZATION
     CreateRecipe.on("start", function() {
         var initialRecipe = new CreateRecipe.Recipe();
-        var topView = new CreateRecipe.RecipeView({model: initialRecipe});
-        CreateRecipe.regions.tree.show(topView);
+        var initialRecipe2 = new CreateRecipe.Recipe();
+        var initialRecipe3 = new CreateRecipe.Recipe();
+
+        var tv = new CreateRecipe.TreeView({model: initialRecipe});
+        var tcv = new CreateRecipe.TreeControlView({model: initialRecipe});
+        CreateRecipe.regions.tree.show(tv);
+        CreateRecipe.regions.treeControl.show(tcv);
 
         var focusSelector = "button:contains('"+initialRecipe.get("name")+"')";
         $(focusSelector).css("background-color", "yellow");
 
-        var focusView = new CreateRecipe.FocusView({model: initialRecipe, topRec: initialRecipe});
-        CreateRecipe.regions.focus.show(focusView);
+        // this doesn't need access to topRec
+        var fv = new CreateRecipe.FocusView({model: initialRecipe, topRec: initialRecipe});
 
-        var commitView = new CreateRecipe.CommitView({model: initialRecipe});
-        CreateRecipe.regions.control.show(commitView);
+        // needs access to topRec only??
+        var fcv = new CreateRecipe.FocusControlView({});
+        CreateRecipe.regions.focus.show(fv);
+        CreateRecipe.regions.focusControl.show(fcv);
     });
 
     CreateRecipe.start();
