@@ -51,7 +51,6 @@ exports.flattenRecipe = flattenRecipe;
 
 
 function nestRecipe(ra) {
-    console.log("Beginning of Nest", ra);
     while (ra.length > 1) {
         var inner = function () {
             for (var z = (ra.length-1); z >= 0; z--) {
@@ -84,7 +83,6 @@ function nestRecipe(ra) {
         }
         inner();
     }
-    console.log("End of Nest", ra);
     var topRec = {};
     topRec["_id"] = ra[0]["_id"];
     topRec["name"] = ra[0]["name"];

@@ -101,10 +101,7 @@ module.exports = function(app) {
         models.RecipeModel.findOne({ "name": req.param("recname"), "version": req.param("recversion")}, function(err, rec) {
             var queryTree = function(recNode) {
                 result.push(recNode);
-                console.log(result);
-                console.log(calls);
                 if (recNode["children"].length > 0) {
-                    //calls = calls + 1;
                     models.RecipeModel.find({"_id": {$in: recNode["children"]}}, function(err, recs) {
                         for (var c = 0; c < recs.length ; c++) {
                             calls = calls + 1;
@@ -115,7 +112,6 @@ module.exports = function(app) {
                 } else {
                     calls = calls - 1;
                     if (calls == 0) {
-                        //console.log("Calls Done?");
                         if (req.param("download")) {
                             var model = models.nestRecipe(result);
                             var modelString = JSON.stringify(model);
@@ -129,8 +125,10 @@ module.exports = function(app) {
                 }
             };
             var result = [];
-            // change from 1 to 0?
-            var calls = 0;
+            var calls = 1;
+            if (rec["children"].length > 0) {
+                calls = 0
+            }
             queryTree(rec);
 	    });
     });
