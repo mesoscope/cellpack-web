@@ -1,139 +1,146 @@
-var helpers = require('utils');
-var undersc = require('underscore');
-var fs = require('fs');
+var async = require("async");
+var models = require("../models");
 
-exports.index = function(recipeModel) {
-    return function(req, res) {
-        recipeModel.find(function (e, recipes) {
-            var recNames = helpers.getDocNames(recipes);
-            res.render('index', {'title': 'Cellpack', 'recNames': recNames});
-        });
-    };
-};
 
-exports.versioner = function(recipeModel) {
-    return function(req, res) {
-        recipeModel.find(function(e, recipes) {
-            var possibleVersions = helpers.getStringVersions(recipes, req.body['recipename']);
-            res.send(possibleVersions);
-        });
-    };
-};
+module.exports = function(app) {
+    app.get("/", function(req, res) {
+	    models.RecipeModel.distinct("name", function(err, names) {
+	        res.render("index", {"title": "Cellpack", "recNames": names});
+	    });
+    });
 
-exports.modify = function(recipeModel) {
-    return function(req, res) {
-        recipeModel.find(function(e, recipes) {
-            var recNames = helpers.getDocNames(recipes);
-            res.render('modify', {'title': 'Modify Recipe', 'recNames': recNames});
-        });
-    };
-};
 
-exports.hierarchy = function(recipeModel) {
-    return function(req, res) {
-        recipeModel.find({}, function(e, recipes) {
-            var reqID = req.body['recipename']+'-'+req.body['recipevers'].split('.').join('_');
-            var identifierTree = helpers.getIdentifierTree(recipes, reqID);
-            res.send(identifierTree);
-        });
-    };
-};
+    // REST API
+    // POST
+    // ACCEPTS NESTED REPRESENTATION FROM CLIENT
+    // CONVERTS TO FLAT REPRESENTATION
+    // PUSHES FLAT REPRESENTATION TO DB
+    app.post("/recipe/:recname/:recversion", function(req, res) {
+	    var jsonRec = JSON.parse(req.body["recipe"]);
+	    var flattened = models.flattenRecipe(jsonRec);
 
-exports.tabler = function(recipeModel) {
-    return function(req, res) {
-        var newID = req.body['recipename']+'-'+req.body['recipevers'].split('.').join('_');
-        recipeModel.findOne({'recipeIdentifier': newID}, function(e, rec) {
-            res.send(rec);
-        });
-    };
-};
-
-exports.commit = function(recipeModel) {
-    return function(req, res) {  
-        recipeModel.find({}, function(e, recipes) {
-
-            var nextVersion = helpers.getLastVersion(recipes, req.body['newRecipe']['recipeIdentifier']);
-            var newRecipes = [{'recipeIdentifier': nextVersion, 'recipeOptions': req.body['newRecipe']['recipeOptions']}];
-            newRecipes[0]['recipeChildren'] = helpers.getChildrenList(recipes, req.body['derivedIdentifier']);
-            var treeEdits = helpers.getDescendents(recipes, req.body['topLevel'], req.body['derivedIdentifier']);
-            var treeRecipes = helpers.buildTreeRecipes(recipes, treeEdits);
-            newRecipes = newRecipes.concat(treeRecipes);
-            recipeModel.create(newRecipes);
-            res.send('Finished');
-        });
-    };
-};
-
-exports.create = function(recipeModel) {
-    return function(req, res) {
-        recipeModel.find(function(e, recipes) {
-            var recNames = helpers.getDocNames(recipes);
-            res.render('create', {'title': 'Create New Recipe', 'recNames': recNames});
-        });
-    };
-};
-
-exports.createRecipe = function(recipeModel) {
-    return function(req, res) {
-        if (req.body['recname'] != '') {
-            var newRecipe = {'recipeIdentifier': req.body['recname']+'-0_0_0'};
-
-            if (req.body['optionLab'] != '') {
-                newRecipe['recipeOptions'] = {};
-                if (req.body['optionLab'] instanceof Array) {
-                    for (var i = 0; i < req.body['optionLab'].length; i++) {
-                        newRecipe['recipeOptions'][req.body['optionLab'][i]] = req.body['optionVal'][i];
-                    }
-                } else {
-                    newRecipe['recipeOptions'][req.body['optionLab']] = req.body['optionVal'];
-                }
-            }
-
-            if (req.body.hasOwnProperty('childname')) {
-                if (req.body['childname'] instanceof Array) {
-                    var childidentifiers = [];
-                    for (var i = 0; i < req.body['childname'].length; i++) {
-                        childidentifiers.push(req.body['childname'][i]+'-'+req.body['childversion'][i].split('.').join('_'));
-                    }
-                    newRecipe['recipeChildren'] = childidentifiers;
-                } else {
-                    newRecipe['recipeChildren'] = [req.body['childname']+'-'+req.body['childversion'].split('.').join('_')]; 
-                } 
-            } else { 
-                newRecipe['recipeChildren'] = []; 
-            } 
-            var createdRecipe = new recipeModel(newRecipe);
-            createdRecipe.save();
-        }
-        res.redirect('/');
-    };
-};
-
-exports.downloadRecipe = function(recipeModel) {
-    return function(req, res) {
-        var requestID = req.body['recname']+'-'+req.body['recversion'].split('.').join('_');
-        recipeModel.find({}, function(e, recipes) {
-            var dList = helpers.getFlatHierarchy(recipes, requestID);
-            res.download('./tmp/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
-                if (err) {
-                    var recipePack = {};
-                    for (var i = 0; i < dList.length; i++) {
-                        for (var j = 0; j < recipes.length; j++) {
-                            if (dList[i] == recipes[j]['recipeIdentifier']){
-                                recipePack[dList[i]] = recipes[j];
-                            }
+        var iterPost = function(iterArray) {
+            async.forEachOfSeries(iterArray, function(rec, recIndex, cb) {
+                if (rec) {
+                    var queryCurrent = {"name": rec["name"], "version": rec["version"], "option": rec["option"], "children": rec["children"], "current": rec["current"]};
+                    models.RecipeModel.findOne(queryCurrent, function(err, recMaybe) {
+                        if (!recMaybe) {
+                            async.every(queryCurrent["children"], function(c, cab) {
+                                var inDB = true;
+                                for (var w = 0; w < iterArray.length ; w++) {
+                                    if (iterArray[w]["_id"] == c) {
+                                        inDB = false;
+                                        var queryChild = {"name": iterArray[w]["name"], "version": iterArray[w]["version"], "option": iterArray[w]["option"], "children": iterArray[w]["children"], "current": iterArray[w]["current"]};
+                                        break;
+                                    }
+                                }
+                                if (inDB) {
+                                    var newId = models.oid(c.toString());
+                                    var queryChild = {"_id": newId};
+                                }
+                                models.RecipeModel.findOne(queryChild, function(err, recChild) {
+                                    if (recChild) {
+                                        cab(true);
+                                    } else {
+                                        cab(false);
+                                    }
+                                });
+                            }, function(result) {
+                                if (result) {
+                                    var baseRec = iterArray.splice(recIndex, 1)[0];
+                                    var zid = baseRec["_id"];
+                                    delete baseRec["_id"];
+                                    models.RecipeModel.findOne({"name": baseRec["name"], "current": true}, function (err, recName) {
+                                        if (recName) {
+                                            baseRec["version"] = recName["version"] + 1;
+                                            baseRec["current"] = true;
+                                            recName.current = false;
+                                            recName.save();
+                                        }
+                                        var newRec = new models.RecipeModel(baseRec);
+                                        newRec.save();
+                                        for (var a = 0; a < iterArray.length; a++) {
+                                            var pidIndex = iterArray[a]["children"].indexOf(zid);
+                                            if (pidIndex > -1) {
+                                                iterArray[a]["children"][pidIndex] = newRec._id.toString();
+                                            }
+                                        }
+                                        cb();
+                                    });
+                                } else {
+                                    cb();
+                                }
+                            });
                         }
-                    }
-                    fs.writeFile('./tmp/'+requestID+'-pack.json', JSON.stringify(recipePack, null, 4), function(err) {
-                        res.download('./tmp/'+requestID+'-pack.json', requestID+'-pack.json', function(err) {
-                            if (err) {
-                                console.log(err);
-                                res.redirect('/');
-                            }
-                        });
                     });
+                } else {
+                    cb();
+                }
+            }, function(err) {
+                // called at end of async each
+                if (err) {
+                    console.log(err);
+                } else {
+                    if (iterArray.length > 0) {
+                        iterPost(iterArray);
+                    }
                 }
             });
+        };
+
+        iterPost(flattened);
+        res.send("success");
+    });
+
+    // REST API
+    // GET
+    // PULLS FLAT REPRESENTATION FROM DB
+    // CONVERTS TO NESTED REPRESENTATION
+    // RETURNS NESTED REPRESENTATION TO CLIENT
+    app.get("/recipe/:recname/:recversion/:download?", function(req, res) {
+        models.RecipeModel.findOne({ "name": req.param("recname"), "version": req.param("recversion")}, function(err, rec) {
+            var queryTree = function(recNode) {
+                result.push(recNode);
+                if (recNode["children"].length > 0) {
+                    models.RecipeModel.find({"_id": {$in: recNode["children"]}}, function(err, recs) {
+                        for (var c = 0; c < recs.length ; c++) {
+                            calls = calls + 1;
+                            queryTree(recs[c]);
+                            calls = calls - 1;
+                        }
+                    });
+                } else {
+                    calls = calls - 1;
+                    if (calls == 0) {
+                        if (req.param("download")) {
+                            var model = models.nestRecipe(result);
+                            var modelString = JSON.stringify(model);
+                            res.set({"Content-Disposition":"attachment; filename="+model["name"]+"_"+model["version"]+".json"});
+                            res.send(modelString);
+                        } else {
+                            console.log(models.nestRecipe(result));
+                            res.send(models.nestRecipe(result));
+                        }
+                    }
+                }
+            };
+            var result = [];
+            var calls = 1;
+            if (rec["children"].length > 0) {
+                calls = 0
+            }
+            queryTree(rec);
+	    });
+    });
+
+    // REST API
+    // HELPER FUNCTION
+    // RETURNS ARRAY OF RECIPE VERSIONS
+    app.get("/recipe/:recname", function(req, res) {
+        models.RecipeModel.find({"name": req.param("recname")}, function(err, recipes) {
+            var versions = recipes.map(function(r) {return r["version"];});
+            res.send(versions);
         });
-    };
-};
+    });
+    require("./create")(app);
+}

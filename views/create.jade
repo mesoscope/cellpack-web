@@ -1,38 +1,42 @@
 extends layout
 
-block subhead
-    script(src="javascripts/jquery-2.1.1.js")
-    script.
-        var recNames = !{JSON.stringify(recNames)}
-    script(src="javascripts/create.js")
-
 block content
-    div(id="createInterface", align="middle")
-        form(id="createForm", cation="/create", method="post")
-            h2 Create New Cellpack Recipe &nbsp
-            h3 Recipe Name
-            input(type="text", name="recname")
-            br
-            br
-            br
-            div(id="recOptions", style="float:left;width:48%")
-                h3 Recipe Options
-                h4 Option Label &nbsp Option Value
-                div(id="recOptionFields")
-                    input(type="text", class="optionLabs", name="optionLab")
-                    input(type="text", class="optionVals", name="optionVal")
-                br
-                br
-                button(type="button", id="recOptioner") Add More Recipe Options
-            div(id="recChildren", style="float:right;width:48%")
-                h3 Recipe Children
-                h4(id="childrenHeader") Recipe Child &nbsp Child Version
-                div(id="recChildrenFields")
-                br
-                br
-                button(type="button", id="recChilder") Add Recipe Children
-            div(id="formFooter", align="middle", style="clear:both")
-                br
-                br
-                br
-                button(type="submit") Create New Recipe
+    div(id="createHeader", class="row", align="middle")
+        h2 Create New Recipe
+
+    div(id="createContainer", class="row")
+        div(id="leftContainer", class="col-xs-6")
+            div(id="treeContainer", overflow="scroll")
+            div(id="treeControl", align="middle")
+                button(id="", class="btn btn-default", type="button") Save All to Server
+        div(id="rightContainer", class="col-xs-6")
+            div(id="focusContainer", overflow="scroll")
+            div(id="focusControl", align="middle")
+                button(id="child", class="btn btn-default", type="button") New Child
+                select(id="nameSelect")
+                select(id="recVersion")
+                button(id="existChild", class="btn btn-default", type="button") Existing Child
+                button(id="save", class="btn btn-default", type="button") Save Recipe
+                button(id="delete", class="btn btn-default", type="button") Delete Recipe
+ 
+block scripts
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js", type="text/javascript")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.2.0/backbone-min.js", type="text/javascript")
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/backbone.marionette/2.4.1/backbone.marionette.min.js", type="text/javascript")
+
+        script(id="recipeTemplate", type="text/template")
+            | <li><button class="btn btn-default nameButton" type="button" data-id="<%= cid %>"><%= name %></button></li>
+
+        script(id="focusTemplate", type="text/template")
+            | <div class="form-group">
+            |   <label for="rec-name">Recipe Name</label>
+            |   <input class="form-control" type="text" id="rec-name" value="<%= name %>" placeholder="<%= name %>">
+            | </div>
+            | <div class="form-group">
+            |   <label for="rec-option">Option</label>
+            |   <input class="form-control" type="text" id="rec-option" value="<%= option %>" placeholder="<%= option %>">
+
+        script.
+            recNames="#{recNames}";
+
+        script(src="javascripts/create.js")

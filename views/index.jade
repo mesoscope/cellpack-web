@@ -1,15 +1,14 @@
 extends layout
 
-block subhead
-    script(src="javascripts/jquery-2.1.1.js")
-    script(src="javascripts/versioner.js")
-
 block content
-    div(id="versioncontain", style="height:75px", align="middle")
-        h2 Download autoPACK Recipe &nbsp
-            form(method='post', action='/download')
-                select(name='recname', class='recn')
-                    each rn, index in recNames
-                        option(value=rn)= rn
-                select(name='recversion', class='recv')
-                button(type="submit") Download
+    div(id="versioncontain", class="row", align="middle")
+        h2 Download cellPACK Recipe &nbsp
+        select(id="nameSelect")
+            each rn, index in recNames
+                option(value=rn)= rn
+        select(id="recVersion")
+        br
+        br
+        button(id="download", class="btn btn-default", type="button") Download
+    block scripts
+        script(src="javascripts/version.js")
